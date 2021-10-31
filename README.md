@@ -1,33 +1,58 @@
-1 Introduction
+## Introduction
 
 
-2 Model
-2.1 continuous form:
 
-ds/dt = v
-M*dv/dt = - A - B * v - T_f * C * v^2 - F_e + u 
+## Getting Started
 
-2.2 discrete form:
+1. complie
 
-v_i+1^2 - v_i^2 = 2 * delta_s * a   
-M * a = - A - B * v_i - T_f * C * v_i^2 - F_e + u_i 
+   ``` 
+   g++ DPTest.cpp -o test
 
-3 Algorithm
+2. run
+
+   ```
+   .\test
+
+3. output
+
+   ``` 
+   DPResult.txt
+
+4. visualization
+
+   ``` 
+   DPVisualization.ipynb
+   ```
+
+## Model
+### continuous form
+
+$$
+\dot{x} = v \tag{1}
+$$
+
+$$
+Ma = -A - Bv-T_fCv^2-F_e+u \tag{2}
+$$
+
+### discrete form
+
+$$
+v_{i+1}^2 - v_{i}^2 = 2a_is \tag{3}
+$$
+
+$$
+Ma_i = -A-Bv_i-T_fCv_i^2-F_e+u_i \tag{4}
+$$
+
+## Algorithm
 
 
-4 Experiment
 
+## Experiment
 
-5 Start to run
-    complie:
-        g++ DPTest.cpp -o test
-    run:
-        ./test
-    output:
-        DPResult.txt
-    visualization:
-        DPVisualization.ipynb
-
+![SpeedLimitCurve](.\analysis\DPSpeedVSLimitCurve.png)
 
 
 
