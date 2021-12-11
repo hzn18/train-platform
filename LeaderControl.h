@@ -6,6 +6,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/daily_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 #include "Constant.h"
 #include "ReadMaxSpeed.h"
@@ -29,11 +30,14 @@ void LeaderControl(){
 	spdlog::logger logger("console", sink_list.begin(), sink_list.end());
     logger.set_level(spdlog::level::info);
 
-    auto debug_control_logger = std::make_shared<spdlog::logger>("leader_debug", daily_sink);
-	auto debug_mpc_logger = std::make_shared<spdlog::logger>("mpc_debug", daily_sink);
+    auto debug_control_logger = spdlog::logger("leader_debug", daily_sink);
+    debug_control_logger.set_level(spdlog::level::debug);
 
-    debug_control_logger->set_level(spdlog::level::debug);
-	debug_mpc_logger->set_level(spdlog::level::debug);
+	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("./log/mpc_log.txt");
+	auto mpc_logger= spdlog::logger("mpc_log", mpc_sink);
+	mpc_logger.set_level(spdlog::level::debug);
+	mpc_logger.flush_on(spdlog::level::info);
+
 
 	// read max speed info
 	vector<pair<float, float>> speedMaxInfo = readSpeedMax("./result/DPResult.txt");
@@ -47,7 +51,7 @@ void LeaderControl(){
 
 //	while(space < speedMaxInfo[1].first){
 	
-	for(int k = 0; k < 1000;k++){
+	for(int k = 0; k < 300;k++){
 		logger.info("{} iteration:", k);
 
 		double max_delta_space =  v_max * Ts * Np;
@@ -70,10 +74,11 @@ void LeaderControl(){
 
 		for(int i = 0; i <= delta_index;i++){
 			speedMaxInfoPart.push_back(make_pair(speedMaxInfo[i + index].first, speedMaxInfo[i + index].second));
+		    debug_control_logger.debug("space = {}, max = {}", speedMaxInfo[i+index].first, speedMaxInfo[i+index].second);
 		}
 
         // calculate the function
-	    float function = MPCCaculate(space, speed, speedMaxInfoPart);
+	    float function = MPCCaculate(space, speed, speedMaxInfoPart, mpc_logger);
 
         // control the train 
 		vector<float> state = dynamicModel(function, space, speed);

@@ -4,14 +4,16 @@
 #include <math.h>
 #include <vector>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+
 using namespace std;
 
-float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxInfoPart)
+float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxInfoPart, spdlog::logger logger)
 {
+    logger.info("space is {}, speed is {}", space, speed);
+
 	int part_size = speedMaxInfoPart.size();
-   // for(int i = 0; i < part_size;i++){
-   //     cout << speedMaxInfoPart[i].first << " " << speedMaxInfoPart[i].second << endl;
-   // }
 
 	try{
 		// Create an environment
@@ -132,25 +134,17 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
         }
 
 		model.optimize();
-		/*
-		for (int i = 0; i < Np; i++) {
-			cout << U[i].get(GRB_StringAttr_VarName) << " "
-				<< U[i].get(GRB_DoubleAttr_X) << endl;
-		}
-        */
-//		for (int i = 0; i < Np; i++) {
-//			cout << "V_max[" << i << "]:" << V_max[i].getValue() << endl;
-//		}
-		// cout << " Obj : " << model.get(GRB_DoubleAttr_ObjVal) << endl;
-//		cout << 2;
+		
+		logger.info("status is {}", model.get(GRB_IntAttr_Status));
+
 		return U[0].get(GRB_DoubleAttr_X);
 	}
 	catch (GRBException e) {
-		cout << " Error code = " << e.getErrorCode() << endl;
-		cout << e.getMessage() << endl;
+		logger.error(" Error code = {}", e.getErrorCode());
+		logger.error("{}",e.getMessage());
 	}
 	catch (...) {
-	    cout << " Exception during optimization " << endl;
+	    logger.warn(" Exception during optimization ");
     }
 	return 0;
 }
