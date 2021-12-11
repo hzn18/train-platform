@@ -1,0 +1,510 @@
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:00 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"
+
+Gurobi 9.5.0 (linux64, C++) logging started Sat Dec 11 15:31:01 2021
+
+Set parameter LogToConsole to value 0
+Set parameter Username
+Set parameter LogFile to value "./log/mpc_log.txt"

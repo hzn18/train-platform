@@ -37,7 +37,8 @@ public:
     void saveControlResult(string filename){
         ofstream fout(filename);
         for(auto trainState : trainStateList){
-            fout << trainState.space << "," << trainState.limit << "," << trainState.speed << "," << trainState.force << endl;
+            //fout << trainState.space << " " << trainState.limit << " " << trainState.speed << " " << trainState.force << endl;
+            fout << trainState.space << " " << trainState.speed << endl;
         }
     }
 };

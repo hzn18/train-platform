@@ -7,47 +7,12 @@
 #include "ContextParam.h"
 #include <cmath>
 #include <fstream>
+#include "../Constant.h"
+
 using namespace std;
 
 //model
 //We use the discrete model according to README.md. And we calcuate with F_e because we simulation it in a Straight Line
-
-//params: train model parameters
-#define A 9155      //unit: N
-#define B 633.6     //unit: Ns/m
-#define T_f_C 46.84 //unit: Ns^2/m^2
-#define M 160800    //unit: kg
-
-#define a_br  0.92   //unit: m/s^2   braking
-#define a_dr  0.9    //unit: m/s^2   driving
-#define P_br  220000 //unit: w
-#define P_dr  120000 //unit: w
-#define j_max 0.98   //unit: m/s^3
-
-//params: simluation parameters
-#define delta_s 0.5 //unit: m
-#define delta_v 0.01 //unit: m/s
-
-//function: transform speed limit txt file into vector variables
-vector<SpeedLimitInfo> readSpeedLimit(string speedLimitFile){
-    vector<SpeedLimitInfo> speedLimitInfoList;
-    //TODO:
-    ifstream fin;
-    fin.open(speedLimitFile, ios::in);
-    string buf1 = {0};
-    string buf2 = {0};
-    SpeedLimitInfo speedLimitInfo;
-    while(fin >> buf1 && fin >> buf2){
-        if(buf2 == "0")
-        {
-            speedLimitInfoList.push_back(speedLimitInfo);
-            speedLimitInfo.clearInfo();
-        }
-        else
-            speedLimitInfo.insertLimitInfo(atof(buf1.c_str()), atof(buf2.c_str()));
-    }
-    return speedLimitInfoList;
-}
 
 //function: control train by dynamic algorithm
 TrainControlResult controlTrain(SpeedLimitInfo speedLimitInfo){

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include <climits>
 
 using namespace std;
@@ -43,3 +44,24 @@ class ContextInfo{
 public:
     SpeedLimitInfo speedLimitInfo;
 };
+
+//function: transform speed limit txt file into vector variables
+vector<SpeedLimitInfo> readSpeedLimit(string speedLimitFile){
+    vector<SpeedLimitInfo> speedLimitInfoList;
+    //TODO:
+    ifstream fin;
+    fin.open(speedLimitFile, ios::in);
+    string buf1 = {0};
+    string buf2 = {0};
+    SpeedLimitInfo speedLimitInfo;
+    while(fin >> buf1 && fin >> buf2){
+        if(buf2 == "0")
+        {
+            speedLimitInfoList.push_back(speedLimitInfo);
+            speedLimitInfo.clearInfo();
+        }
+        else
+            speedLimitInfo.insertLimitInfo(atof(buf1.c_str()), atof(buf2.c_str()));
+    }
+    return speedLimitInfoList;
+}
