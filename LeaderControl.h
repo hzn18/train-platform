@@ -101,7 +101,7 @@ void LeaderControl(){
 
         // simulation end
 
-		if(speedMaxInfo[speedMaxInfo.size() - 1].first - space < 1 && speed < 0.1)
+		if(speedMaxInfo[speedMaxInfo.size() - 1].first - space < 1 )
 			break;
 	}
     
