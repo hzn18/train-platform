@@ -41,7 +41,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 		X[0] = x0;
 		V[0] = v0;
 		a[0] = a0;
-	
+
 		// binary variable
 		GRBVar Z[Np][part_size];
 		for (int i = 0; i < Np; i++) {
@@ -58,6 +58,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 			X[i] = X[i - 1] + Ts * V[i - 1] + 0.5 * Ts * Ts * a[i - 1];
 			V[i] = V[i - 1] + Ts * a[i - 1];
 		}
+
 
 		// v max
 		GRBLinExpr V_max[Np] = {0};
@@ -76,13 +77,13 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 
         GRBLinExpr X_bound[Np][2];
 		for(int i = 0;i < Np;i++){
-			for(int j = 0;j < Np - 1; j++){
+			for(int j = 0;j < part_size - 1; j++){
 				X_bound[i][0] += Z[i][j+1] * speedMaxInfoPart[j].first;
 			}
-			for(int j = 0;j < Np - 1;j++){
+			for(int j = 0;j < part_size - 1;j++){
 				X_bound[i][1] += Z[i][j] * speedMaxInfoPart[j].first;
 			}
-			X_bound[i][1] += Z[i][Np - 1] * 10000;
+			X_bound[i][1] += Z[i][part_size - 1] * 10000;
 		}
 
 
@@ -94,6 +95,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 			obj += Kv * (1 - V[i + 1]/v_max) * (1 - V[i + 1]/v_max);
 			obj += Ku * U[i] / u_max  * U[i] / u_max;
 		}
+
 		model.setObjective(obj, GRB_MINIMIZE);
 
 		// create constraint:
@@ -117,6 +119,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 			model.addQConstr(V[i] >= 0, v_lb_name.str());
 			model.addQConstr(V[i] <= V_max[i-1], v_ub_name.str());
 		}
+
 		//3. M method
 		for(int i = 1; i <= Np;i++){
 			ostringstream x_lb_name;
@@ -126,6 +129,8 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 			model.addQConstr(X[i] >= X_bound[i-1][0], x_lb_name.str());
 			model.addQConstr(X[i] <= X_bound[i-1][1], x_ub_name.str());
 		}
+        
+
         //4. integer constraint
         for(int i = 0; i < Np;i++){
             ostringstream z_sum_name;
@@ -137,6 +142,9 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 		
 		logger.info("status is {}", model.get(GRB_IntAttr_Status));
 
+		if(model.get(GRB_IntAttr_Status) == 3)
+			return U[0].get(GRB_DoubleAttr_LB);
+		
 		return U[0].get(GRB_DoubleAttr_X);
 	}
 	catch (GRBException e) {

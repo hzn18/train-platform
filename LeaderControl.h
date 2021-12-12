@@ -2,6 +2,7 @@
 
 #include <string>
 #include <math.h>
+#include <fstream>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/daily_file_sink.h"
@@ -49,14 +50,15 @@ void LeaderControl(){
 
 	int index = 0;
 
-//	while(space < speedMaxInfo[1].first){
-	
-	for(int k = 0; k < 300;k++){
-		logger.info("{} iteration:", k);
+	while(1){
 
 		double max_delta_space =  v_max * Ts * Np;
 
         int delta_index = ceil(max_delta_space / delta_s);
+
+        if(delta_index + index > speedMaxInfo.size()-1)
+		    delta_index = speedMaxInfo.size() - 1 - index;
+
 
         double v_max_temp = 0;
 
@@ -70,16 +72,20 @@ void LeaderControl(){
 
 		delta_index = ceil(max_delta_space / delta_s);
 
+		if(delta_index + index > speedMaxInfo.size()-1)
+		    delta_index = speedMaxInfo.size() - 1 - index;
+
         vector<pair<float, float>> speedMaxInfoPart;
 
 		for(int i = 0; i <= delta_index;i++){
 			speedMaxInfoPart.push_back(make_pair(speedMaxInfo[i + index].first, speedMaxInfo[i + index].second));
+
 		    debug_control_logger.debug("space = {}, max = {}", speedMaxInfo[i+index].first, speedMaxInfo[i+index].second);
 		}
 
         // calculate the function
 	    float function = MPCCaculate(space, speed, speedMaxInfoPart, mpc_logger);
-
+         
         // control the train 
 		vector<float> state = dynamicModel(function, space, speed);
         
@@ -89,8 +95,20 @@ void LeaderControl(){
 
         index = floor(space / delta_s);
 
+		result.push_back(vector<float>{space, speed, function});
+
         logger.info("s: {}, v:{}, f:{}", space, speed, function);
+
+        // simulation end
+
+		if(speedMaxInfo[speedMaxInfo.size() - 1].first - space < 1 && speed < 0.1)
+			break;
 	}
+    
+	ofstream fout("./result/LeaderResult.txt");
+    for(auto trainState : result){
+        fout << trainState[0] << " " << trainState[1] << " " << trainState[2] << endl;
+    }
 
 }
 
