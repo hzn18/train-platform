@@ -94,7 +94,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 		double u_max = a_br * M;
 		GRBQuadExpr obj = 0;
 		for (int i = 0; i < Np; i++) {
-			obj += Kv * (v_max - V[i + 1]) * (v_max - V[i + 1]);
+			obj += Kv * (1 - V[i + 1]/v_max) * (1 - V[i + 1]/v_max);
 			obj += Ku * U[i] / u_max  * U[i] / u_max;
 		}
 
@@ -152,17 +152,34 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 
         //print state variable
 
-		logger.info("u0:{}, u1:{}, u2:{}, u3:{}", U[0].get(GRB_DoubleAttr_X),U[1].get(GRB_DoubleAttr_X),
-		                      U[2].get(GRB_DoubleAttr_X),U[3].get(GRB_DoubleAttr_X));
-        logger.info("x0:{}, x1:{}, x2:{}, x3:{}, x4:{}", X[0].getValue(),X[1].getValue(),X[2].getValue(),X[3].getValue(),X[4].getValue());
-        logger.info("v0:{}, v1:{}, v2:{}, v3:{}, v4:{}", V[0].getValue(),V[1].getValue(),V[2].getValue(),V[3].getValue(),V[4].getValue());
-        logger.info("a0:{}, a1:{}, a2:{}, a3:{}", a[0].getValue(),a[1].getValue(),a[2].getValue(),a[3].getValue());
+        ostringstream u_info;
+		ostringstream x_info;
+		ostringstream v_info;
+		ostringstream a_info;
+		ostringstream v_max_info;
+		ostringstream x_lb_info;
+		ostringstream x_ub_info;
 
-		//print constraint 
+        x_lb_info << "lb-> ";
+		x_ub_info << "ub-> ";
 
-		logger.info("v_max0:{}, v_max1:{}, v_max2:{}, v_max3:{}", V_max[0].getValue(),V_max[1].getValue(),V_max[2].getValue(),V_max[3].getValue(),V_max[4].getValue());
-		logger.info("lb-> x0:{}, x1:{}, x2:{}, x3:{}", X_bound[0][0].getValue(),X_bound[1][0].getValue(),X_bound[2][0].getValue(),X_bound[3][0].getValue());
-        logger.info("ub-> x0:{}, x1:{}, x2:{}, x3:{}", X_bound[0][1].getValue(),X_bound[1][1].getValue(),X_bound[2][1].getValue(),X_bound[3][1].getValue());
+		for(int i = 0; i < Np;i++){
+			u_info << "u" << i << ":" << U[i].get(GRB_DoubleAttr_X) << "  ";
+			x_info << "x" << i << ":" << X[i+1].getValue() << "  ";
+			v_info << "v" << i << ":" << V[i+1].getValue() << "  ";
+			a_info << "a" << i << ":" << a[i].getValue() << "  ";
+            v_max_info << "v_max" << i << ":" << V_max[i].getValue() << "  ";
+            x_lb_info << "x" << i << ":" << X_bound[i][0].getValue() << "  ";
+			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
+		}
+		
+        logger.info("{}", u_info.str());
+		logger.info("{}", x_info.str());
+        logger.info("{}", v_info.str());
+		logger.info("{}", a_info.str());
+        logger.info("{}", v_max_info.str());
+		logger.info("{}", x_lb_info.str());
+		logger.info("{}", x_ub_info.str());
 		
 		return U[0].get(GRB_DoubleAttr_X);
 	}

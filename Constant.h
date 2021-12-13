@@ -16,10 +16,10 @@
 
 
 //params: leader control 
-#define Kv 0.01
-#define Ku 1
+#define Kv 1
+#define Ku 0.02
 
 //params: MPC step size
-#define Np 4
+#define Np 8
 #define Ts 0.1
 #define v_max 30
