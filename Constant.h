@@ -26,3 +26,6 @@
 
 //params: convoy control
 #define train_num 2
+#define d_des 30   //unit: m   safe distance
+#define d_min 20   //unit: m   space policy
+

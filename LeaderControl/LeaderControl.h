@@ -18,11 +18,11 @@ string mpc_logger_filename = "../log/mpc_log.txt";
 string dp_input_filename = "../result/DPResult.txt";
 string leader_output_filename = "../result/LeaderResult.txt";
 
-vector<float> dynamicModel(float function, float space, float speed){
-	float a = (function - A - B*speed  - T_f_C*speed*speed) / M;
-    float v = speed + a * Ts;
-	float s = space + speed * Ts + 0.5 * a * Ts * Ts;
-	return vector<float>({s, v});
+vector<double> dynamicModel(double function, double space, double speed){
+	double a = (function - A - B*speed  - T_f_C*speed*speed) / M;
+    double v = speed + a * Ts;
+	double s = space + speed * Ts + 0.5 * a * Ts * Ts;
+	return vector<double>({s, v});
 }
 
 void LeaderControl(){
@@ -43,12 +43,12 @@ void LeaderControl(){
 	mpc_logger.flush_on(spdlog::level::info);
 
 	// read max speed info
-	vector<pair<float, float>> speedMaxInfo = readSpeedMax(dp_input_filename);
+	vector<pair<double, double>> speedMaxInfo = readSpeedMax(dp_input_filename);
  
-    vector<vector<float>> result; //space, speed, function
+    vector<vector<double>> result; //space, speed, function
 
-	float space = 0;
-	float speed = 0;
+	double space = 0;
+	double speed = 0;
 
 	int index = 0;
 
@@ -77,7 +77,7 @@ void LeaderControl(){
 		if(delta_index + index > speedMaxInfo.size()-1)
 		    delta_index = speedMaxInfo.size() - 1 - index;
 
-        vector<pair<float, float>> speedMaxInfoPart;
+        vector<pair<double, double>> speedMaxInfoPart;
 
 		for(int i = 0; i <= delta_index;i++){
 			speedMaxInfoPart.push_back(make_pair(speedMaxInfo[i + index].first, speedMaxInfo[i + index].second));
@@ -86,12 +86,12 @@ void LeaderControl(){
 		}
 
         // calculate the function
-	    vector<float> function_list = LeaderMPCCaculate(space, speed, speedMaxInfoPart, mpc_logger_filename, mpc_logger);
+	    vector<vector<double>> mpc_list = LeaderMPCCaculate(space, speed, speedMaxInfoPart, mpc_logger_filename, mpc_logger);
          
-		float function = function_list[0];
+		double function = mpc_list[0][2];
 		
         // control the train 
-		vector<float> state = dynamicModel(function, space, speed);
+		vector<double> state = dynamicModel(function, space, speed);
         
 		space = state[0];
 
@@ -99,7 +99,7 @@ void LeaderControl(){
 
         index = floor(space / delta_s);
 
-		result.push_back(vector<float>{space, speed, function});
+		result.push_back(vector<double>{space, speed, function});
 
         logger.info("s: {}, v:{}, f:{}", space, speed, function);
 

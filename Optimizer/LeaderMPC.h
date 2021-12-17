@@ -7,9 +7,13 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
+#include "../utils/exception/MyException.h"
+
 using namespace std;
 
-vector<float> LeaderMPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxInfoPart, string mpc_filename ,spdlog::logger logger)
+//output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
+
+vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair<double, double>> speedMaxInfoPart, string mpc_filename ,spdlog::logger logger)
 {
     logger.info("space is {}, speed is {}", space, speed);
 
@@ -147,8 +151,8 @@ vector<float> LeaderMPCCaculate(float space, float speed, vector<pair<float, flo
 		
 		logger.info("status is {}", model.get(GRB_IntAttr_Status));
 
-		if(model.get(GRB_IntAttr_Status) == 3)
-			return vector<float>({U[0].get(GRB_DoubleAttr_LB)});
+		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
+			throw InfeasibleException();
 
         //print state variable
 
@@ -181,18 +185,36 @@ vector<float> LeaderMPCCaculate(float space, float speed, vector<pair<float, flo
 		logger.info("{}", x_lb_info.str());
 		logger.info("{}", x_ub_info.str());
 		
-        vector<float> result;
-		for(auto u: U){
-			result.push_back(U[i].get(GRB_DoubleAttr_X));
+        vector<vector<double>> result;
+		for(int i = 0; i < Np; i++){
+			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
 		}
+
 		return result;
 	}
 	catch (GRBException e) {
 		logger.error(" Error code = {}", e.getErrorCode());
 		logger.error("{}",e.getMessage());
 	}
+	catch (InfeasibleException e){
+		logger.error("{}", e.message());
+	}
 	catch (...) {
 	    logger.warn(" Exception during optimization ");
     }
-	return vector<float>({0});
+
+    // 抛出异常，以最保守方式估计
+    vector<vector<double>> result;
+
+    double function = -M * a_br;
+    double v = speed;
+	double s = space;
+	for(int i = 0; i < Np; i++){
+        double a = (function - A - B * v  - T_f_C * v * v) / M;
+        v += a * Ts;
+	    s += v * Ts + 0.5 * a * Ts * Ts;
+		result.push_back(vector<double>({s, v, function}));
+	}
+
+	return result;
 }
