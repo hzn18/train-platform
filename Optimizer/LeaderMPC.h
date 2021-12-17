@@ -9,7 +9,7 @@
 
 using namespace std;
 
-float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxInfoPart, spdlog::logger logger)
+vector<float> LeaderMPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxInfoPart, string mpc_filename ,spdlog::logger logger)
 {
     logger.info("space is {}, speed is {}", space, speed);
 
@@ -18,7 +18,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 	try{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", "./log/mpc_log.txt");
+		env.set("LogFile", mpc_filename);
 		env.set("LogToConsole", "0");
 		env.start();// Create an empty model
 		GRBModel model = GRBModel(env);
@@ -148,7 +148,7 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 		logger.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)
-			return U[0].get(GRB_DoubleAttr_LB);
+			return vector<float>({U[0].get(GRB_DoubleAttr_LB)});
 
         //print state variable
 
@@ -181,7 +181,11 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 		logger.info("{}", x_lb_info.str());
 		logger.info("{}", x_ub_info.str());
 		
-		return U[0].get(GRB_DoubleAttr_X);
+        vector<float> result;
+		for(auto u: U){
+			result.push_back(U[i].get(GRB_DoubleAttr_X));
+		}
+		return result;
 	}
 	catch (GRBException e) {
 		logger.error(" Error code = {}", e.getErrorCode());
@@ -190,5 +194,5 @@ float MPCCaculate(float space, float speed, vector<pair<float, float>> speedMaxI
 	catch (...) {
 	    logger.warn(" Exception during optimization ");
     }
-	return 0;
+	return vector<float>({0});
 }

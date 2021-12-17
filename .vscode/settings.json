@@ -6,5 +6,6 @@
         "iostream": "cpp",
         "ostream": "cpp",
         "iosfwd": "cpp"
-    }
+    },
+    "VSCodeCounter.ignoreUnsupportedFile": false
 }

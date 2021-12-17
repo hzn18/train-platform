@@ -1,6 +1,8 @@
-rm ./log/*
+cd ./LeaderControl
 
-LeaderControlfile=LeaderControlTest.cpp
+rm ../log/*
+
+LeaderControlfile=./LeaderControlTest.cpp
 
 Header=/opt
 

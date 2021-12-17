@@ -23,3 +23,6 @@
 #define Np 8
 #define Ts 0.1
 #define v_max 30
+
+//params: convoy control
+#define train_num 2

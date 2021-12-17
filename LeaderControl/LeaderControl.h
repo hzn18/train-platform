@@ -1,5 +1,3 @@
-// MPC example
-
 #include <string>
 #include <math.h>
 #include <fstream>
@@ -9,11 +7,16 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-#include "Constant.h"
-#include "ReadMaxSpeed.h"
-#include "MPC.h"
+#include "../Constant.h"
+#include "../utils/ReadMaxSpeed.h"
+#include "../Optimizer/LeaderMPC.h"
 
 using namespace std;
+
+string logger_filename = "../log/log.txt";
+string mpc_logger_filename = "../log/mpc_log.txt";
+string dp_input_filename = "../result/DPResult.txt";
+string leader_output_filename = "../result/LeaderResult.txt";
 
 vector<float> dynamicModel(float function, float space, float speed){
 	float a = (function - A - B*speed  - T_f_C*speed*speed) / M;
@@ -23,7 +26,7 @@ vector<float> dynamicModel(float function, float space, float speed){
 }
 
 void LeaderControl(){
-    auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("./log/log.txt", 23, 59);
+    auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(logger_filename, 23, 59);
 	auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_level(spdlog::level::info);
 
@@ -34,14 +37,13 @@ void LeaderControl(){
     auto debug_control_logger = spdlog::logger("leader_debug", daily_sink);
     debug_control_logger.set_level(spdlog::level::debug);
 
-	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("./log/mpc_log.txt");
+	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(mpc_logger_filename);
 	auto mpc_logger= spdlog::logger("mpc_log", mpc_sink);
 	mpc_logger.set_level(spdlog::level::debug);
 	mpc_logger.flush_on(spdlog::level::info);
 
-
 	// read max speed info
-	vector<pair<float, float>> speedMaxInfo = readSpeedMax("./result/DPResult.txt");
+	vector<pair<float, float>> speedMaxInfo = readSpeedMax(dp_input_filename);
  
     vector<vector<float>> result; //space, speed, function
 
@@ -84,8 +86,10 @@ void LeaderControl(){
 		}
 
         // calculate the function
-	    float function = MPCCaculate(space, speed, speedMaxInfoPart, mpc_logger);
+	    vector<float> function_list = LeaderMPCCaculate(space, speed, speedMaxInfoPart, mpc_logger_filename, mpc_logger);
          
+		float function = function_list[0];
+		
         // control the train 
 		vector<float> state = dynamicModel(function, space, speed);
         
@@ -105,7 +109,7 @@ void LeaderControl(){
 			break;
 	}
     
-	ofstream fout("./result/LeaderResult.txt");
+	ofstream fout(leader_output_filename);
     for(auto trainState : result){
         fout << trainState[0] << " " << trainState[1] << " " << trainState[2] << endl;
     }
