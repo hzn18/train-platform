@@ -17,7 +17,7 @@
 
 //params: leader control 
 #define Kv 1
-#define Ku 0.02
+#define Ku 0.08
 
 //params: MPC step size
 #define Np 8

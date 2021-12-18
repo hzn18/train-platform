@@ -12,6 +12,8 @@
 #include "../Optimizer/LeaderMPC.h"
 #include "../Optimizer/FollowMPC.h"
 
+enum Predictor {SH, NP, MB};
+
 using namespace std;
 
 string logger_filename = "../log/follow_log.txt";
@@ -19,11 +21,38 @@ string mpc_logger_filename = "../log/follow_mpc_log.txt";
 string dp_input_filename = "../result/DPResult.txt";
 string follow_output_dir = "../result/";
 
+Predictor predictor_method = NP;
+
 vector<double> dynamicModel(double function, double space, double speed){
 	double a = (function - A - B*speed  - T_f_C*speed*speed) / M;
     double v = speed + a * Ts;
 	double s = space + speed * Ts + 0.5 * a * Ts * Ts;
 	return vector<double>({s, v});
+}
+
+vector<vector<double>> NPPredictor(double space, double speed){
+    vector<vector<double>> result;
+
+    double function = -M * a_br;
+    double v = speed;
+	double s = space;
+	for(int i = 0; i < Np; i++){
+        double a = (function - A - B * v  - T_f_C * v * v) / M;
+        v += a * Ts;
+	    s += v * Ts + 0.5 * a * Ts * Ts;
+		result.push_back(vector<double>({s, v}));
+	}
+
+    return result;
+}
+
+vector<vector<double>> MBPredictor(double space){
+    vector<vector<double>> result;
+    for(int i = 0; i < Np; i++){
+		result.push_back(vector<double>({space, 0}));
+	}
+
+    return result;
 }
 
 void FollowControl(){
@@ -124,7 +153,18 @@ void FollowControl(){
             // calculate the function
 	        vector<vector<double>> mpc_list = LeaderMPCCaculate(space_tmp[0], speed_tmp[0], speedMaxInfoPart, mpc_logger_filename, mpc_logger);
 
-            predictor = mpc_list;
+            // predictor
+            switch(predictor_method){
+                case SH:
+                    predictor = mpc_list;
+                    break;
+                case NP:
+                    predictor = NPPredictor(space_tmp[0], speed_tmp[0]);
+                    break;
+                case MB:
+                    predictor = MBPredictor(space_tmp[0]);
+                    break;
+            }
 
 		    double function = mpc_list[0][2];
 
@@ -197,7 +237,19 @@ void FollowControl(){
             }
             else 
                 mpc_list = LeaderMPCCaculate(space_tmp[train_id], speed_tmp[train_id], speedMaxInfoPart, mpc_logger_filename, mpc_logger);
-            predictor = mpc_list;
+            
+            // predictor
+            switch(predictor_method){
+                case SH:
+                    predictor = mpc_list;
+                    break;
+                case NP:
+                    predictor = NPPredictor(space_tmp[train_id], speed_tmp[train_id]);
+                    break;
+                case MB:
+                    predictor = MBPredictor(space_tmp[train_id]);
+                    break;
+            }
 
 		    double function = mpc_list[0][2];
 		
