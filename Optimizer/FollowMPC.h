@@ -108,7 +108,7 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 		double u_max = a_br * M;
 		GRBQuadExpr obj = 0;
 		for (int i = 0; i < Np; i++) {
-			obj += K_l_v * (1 - V[i + 1]/predictor[i][1]) * (1 - V[i + 1]/predictor[i][1]);
+			obj += K_l_v * (V[i + 1] - predictor[i][1])/v_max * (V[i + 1] - predictor[i][1])/v_max;
 			obj += K_l_u * U[i] / u_max  * U[i] / u_max;
             obj += K_l_d * (1 - Dis[i]/d_des) * (1 - Dis[i]/d_des);
 		}

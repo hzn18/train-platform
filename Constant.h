@@ -29,7 +29,7 @@
 #define d_des 30   //unit: m   safe distance
 #define d_min 20   //unit: m   space policy
 
-#define K_l_v 0
-#define K_l_d 1
-#define K_l_u 0
+#define K_l_v 1
+#define K_l_d 0.8
+#define K_l_u 0.004
 

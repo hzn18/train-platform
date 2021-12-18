@@ -21,7 +21,7 @@ string mpc_logger_filename = "../log/follow_mpc_log.txt";
 string dp_input_filename = "../result/DPResult.txt";
 string follow_output_dir = "../result/";
 
-Predictor predictor_method = NP;
+Predictor predictor_method = MB;
 
 vector<double> dynamicModel(double function, double space, double speed){
 	double a = (function - A - B*speed  - T_f_C*speed*speed) / M;
@@ -49,7 +49,7 @@ vector<vector<double>> NPPredictor(double space, double speed){
 vector<vector<double>> MBPredictor(double space){
     vector<vector<double>> result;
     for(int i = 0; i < Np; i++){
-		result.push_back(vector<double>({space, 0}));
+		result.push_back(vector<double>({space, 0.001}));
 	}
 
     return result;
@@ -70,7 +70,7 @@ void FollowControl(){
 
 	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(mpc_logger_filename);
 	auto mpc_logger= spdlog::logger("mpc_log", mpc_sink);
-	mpc_logger.set_level(spdlog::level::debug);
+	mpc_logger.set_level(spdlog::level::info);
 	mpc_logger.flush_on(spdlog::level::info);
 
 	// read max speed info
