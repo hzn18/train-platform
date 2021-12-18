@@ -1,3 +1,6 @@
+#ifndef MYEXCEPTION_H
+#define MYEXCEPTION_H
+
 #include <iostream>
 #include <exception>
 #include <string>
@@ -12,3 +15,4 @@ class InfeasibleException: public exception{
     }
 };
 
+#endif

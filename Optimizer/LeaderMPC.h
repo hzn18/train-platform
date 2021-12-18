@@ -3,6 +3,7 @@
 #include <string>
 #include <math.h>
 #include <vector>
+#include <iostream>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -16,7 +17,6 @@ using namespace std;
 vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair<double, double>> speedMaxInfoPart, string mpc_filename ,spdlog::logger logger)
 {
     logger.info("space is {}, speed is {}", space, speed);
-
 	int part_size = speedMaxInfoPart.size();
 
 	try{
@@ -148,13 +148,15 @@ vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair
      //   model.set(GRB_IntAttr_ModelSense, GRB_MINIMIZE);
 
 		model.optimize();
-		
+
 		logger.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
 			throw InfeasibleException();
 
         //print state variable
+
+        
 
         ostringstream u_info;
 		ostringstream x_info;
@@ -176,7 +178,7 @@ vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair
             x_lb_info << "x" << i << ":" << X_bound[i][0].getValue() << "  ";
 			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
 		}
-		
+
         logger.info("{}", u_info.str());
 		logger.info("{}", x_info.str());
         logger.info("{}", v_info.str());
@@ -184,12 +186,11 @@ vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair
         logger.info("{}", v_max_info.str());
 		logger.info("{}", x_lb_info.str());
 		logger.info("{}", x_ub_info.str());
-		
+
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
-			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
+			result.push_back(vector<double>({X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)}));
 		}
-
 		return result;
 	}
 	catch (GRBException e) {

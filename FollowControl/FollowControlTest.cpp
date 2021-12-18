@@ -1,15 +1,6 @@
-//#include "FollowControl.h"
-#include "../utils/exception/MyException.h"
+#include "FollowControl.h"
 
 int main(){
-    try{
-        throw InfeasibleException();
-    }
-    catch(InfeasibleException e){
-        cout << e.message();
-    }
-    catch(...){
-        cout << "Hello World!";
-    }
+    FollowControl();
     return 0;
 }
