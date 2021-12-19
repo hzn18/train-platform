@@ -1,3 +1,9 @@
+/*
+ * @Author: houzhinan 
+ * @Date: 2021-12-19 15:02:20 
+ * @Last Modified by: houzhinan
+ * @Last Modified time: 2021-12-19 18:23:01
+ */
 #include "leader_MPC.h"
 
 #include <gurobi_c++.h>
@@ -15,7 +21,7 @@ using namespace std;
 
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
-vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part, string mpc_filename ,spdlog::logger& logger)
+vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part, string mpc_filename ,spdlog::logger& logger)
 {
     logger.info("space is {}, speed is {}", space, speed);
 	int part_size = speed_max_info_part.size();

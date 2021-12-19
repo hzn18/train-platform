@@ -1,5 +1,11 @@
-#ifndef FOLLOW_MPC_H
-#define FOLLOW_MPC_H
+/*
+ * @Author: houzhinan 
+ * @Date: 2021-12-19 15:02:17 
+ * @Last Modified by: houzhinan
+ * @Last Modified time: 2021-12-19 19:15:58
+ */
+
+#include "follow_MPC.h"
 
 #include <gurobi_c++.h>
 #include <sstream>
@@ -7,25 +13,27 @@
 #include <math.h>
 #include <vector>
 
+#include "constant.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-#include "../utils/exception/MyException.h"
 
 using namespace std;
 
-// TODO:
-
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
-//TODO:
 
-vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair<double, double>> speedMaxInfoPart, vector<vector<double>> predictor, string mpc_filename ,spdlog::logger logger)
+vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, double space, double speed, std::vector<std::pair<double, double>> speed_max_info_part, string mpc_filename, spdlog::logger logger)
 {
-	logger.info("--------------------------------------");
-    logger.info("space is {}, speed is {}", space, speed);
+//    vector<vector<double>> predictor;
+ //   vector<pair<double, double>> speed_max_info_part;
+//    string mpc_filename;
+  //  spdlog::logger mylogger();
 
-	int part_size = speedMaxInfoPart.size();
+//	mylogger.info("--------------------------------------");
+ //   mylogger.info("space is {}, speed is {}", space, speed);
+
+	int part_size = speed_max_info_part.size();
 
 	try{
 		// Create an environment
@@ -92,7 +100,7 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 
         for(int i = 0;i < Np;i++){
 			for(int j = 0;j < part_size;j++){
-				V_max[i] += Z[i][j] * speedMaxInfoPart[j].second; 
+				V_max[i] += Z[i][j] * speed_max_info_part[j].second; 
 			}
 		}
 
@@ -101,10 +109,10 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 			X_bound[i][0] = 0;
 			X_bound[i][1] = 0;
 			for(int j = 0;j < part_size - 1; j++){
-				X_bound[i][0] += Z[i][j+1] * speedMaxInfoPart[j].first;
+				X_bound[i][0] += Z[i][j+1] * speed_max_info_part[j].first;
 			}
 			for(int j = 0;j < part_size - 1;j++){
-				X_bound[i][1] += Z[i][j] * speedMaxInfoPart[j].first;
+				X_bound[i][1] += Z[i][j] * speed_max_info_part[j].first;
 			}
 			X_bound[i][1] += Z[i][part_size - 1] * 3000;
 		}
@@ -175,10 +183,10 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 
 		model.optimize();
 		
-		logger.info("status is {}", model.get(GRB_IntAttr_Status));
+//		mylogger.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
-			throw InfeasibleException();
+			throw "infeasible";
 
         //print state variable
 
@@ -202,15 +210,15 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
             x_lb_info << "x" << i << ":" << X_bound[i][0].getValue() << "  ";
 			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
 		}
-		
-        logger.info("{}", u_info.str());
-		logger.info("{}", x_info.str());
-        logger.info("{}", v_info.str());
-		logger.info("{}", a_info.str());
-        logger.info("{}", v_max_info.str());
-		logger.info("{}", x_lb_info.str());
-		logger.info("{}", x_ub_info.str());
-		
+/*		
+        mylogger.info("{}", u_info.str());
+		mylogger.info("{}", x_info.str());
+        mylogger.info("{}", v_info.str());
+		mylogger.info("{}", a_info.str());
+        mylogger.info("{}", v_max_info.str());
+		mylogger.info("{}", x_lb_info.str());
+		mylogger.info("{}", x_ub_info.str());
+*/		
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
 			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
@@ -219,14 +227,14 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 		return result;
 	}
 	catch (GRBException e) {
-		logger.error(" Error code = {}", e.getErrorCode());
-		logger.error("{}",e.getMessage());
+//		mylogger.error(" Error code = {}", e.getErrorCode());
+//		mylogger.error("{}",e.getMessage());
 	}
-	catch (InfeasibleException e){
-		logger.error("{}", e.message());
+	catch (string str){
+//		mylogger.error("{}", str);
 	}
 	catch (...) {
-	    logger.warn(" Exception during optimization ");
+//	    mylogger.warn(" Exception during optimization ");
     }
 
     // 抛出异常，以最保守方式估计
@@ -244,5 +252,3 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 
 	return result;
 }
-
-#endif

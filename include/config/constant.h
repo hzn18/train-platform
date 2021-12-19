@@ -1,3 +1,6 @@
+#ifndef CONSTANT_H
+#define CONSTANT_H
+
 //params: train model parameters
 #define A 9155      //unit: N
 #define B 633.6     //unit: Ns/m
@@ -33,3 +36,4 @@
 #define K_l_d 0.8
 #define K_l_u 0.004
 
+#endif
