@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:37 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 19:43:41
+ * @Last Modified time: 2021-12-19 21:02:28
  */
 #include <string>
 #include <math.h>
@@ -22,7 +22,7 @@ using namespace std;
 
 string logger_filename = "./logs/log.txt";
 string mpc_logger_filename = "./logs/mpc_log.txt";
-string dp_input_filename = "./db/DPResult.txt";
+string dp_input_filename = "./db/dp_result.txt";
 string leader_output_filename = "./user/result/LeaderResult.txt";
 
 int main(){

@@ -1,8 +1,8 @@
 /*
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:27 
- * @Last Modified by:   houzhinan 
- * @Last Modified time: 2021-12-19 15:02:27 
+ * @Last Modified by: houzhinan
+ * @Last Modified time: 2021-12-19 21:01:29
  */
 #include "read_speed_max.h"
 
@@ -11,9 +11,9 @@
 
 using namespace std;
 
-vector<pair<double, double>> ReadSpeedMax(string speed_limit_file){
+vector<pair<double, double>> ReadSpeedMax(string speed_max_file){
     ifstream fin;
-    fin.open(speed_limit_file, ios::in);
+    fin.open(speed_max_file, ios::in);
     string buf1 = {0};
     string buf2 = {0};
     string buf3 = {0};
@@ -23,3 +23,5 @@ vector<pair<double, double>> ReadSpeedMax(string speed_limit_file){
     }
     return speed_max_info;
 }
+
+

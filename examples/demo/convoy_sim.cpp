@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:35:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 19:42:26
+ * @Last Modified time: 2021-12-19 21:05:25
  */
  
 #include <string>
@@ -26,10 +26,10 @@ using namespace std;
 
 string logger_filename = "./logs/follow_log.txt";
 string mpc_logger_filename = "./logs/follow_mpc_log.txt";
-string dp_input_filename = "./db/DPResult.txt";
+string dp_input_filename = "./db/dp_result.txt";
 string follow_output_dir = "./user/result";
 
-Predictor predictor_method = MB;
+Predictor predictor_method = SH;
 
 
 int main(){
