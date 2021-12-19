@@ -1,4 +1,8 @@
 {
+    "fileheader.Author": "houzhinan",
+	"fileheader.LastModifiedBy": "houzhinan",
+	"fileheader.tpl": "/*\r\n * @Author: {author} \r\n * @Date: {createTime} \r\n * @Last Modified by:   {lastModifiedBy} \r\n * @Last Modified time: {updateTime} \r\n */\r\n",
+
     "files.associations": {
         "vector": "cpp",
         "climits": "cpp",

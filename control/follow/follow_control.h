@@ -1,3 +1,6 @@
+#ifndef FOLLOW_CONTROL_H
+#define FOLLOW_CONTROL_H
+
 #include <string>
 #include <math.h>
 #include <fstream>
@@ -286,4 +289,4 @@ void FollowControl(){
 
 }
 
-
+#endif

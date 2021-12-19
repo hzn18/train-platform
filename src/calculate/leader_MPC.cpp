@@ -1,24 +1,24 @@
+#include "leader_MPC.h"
+
 #include <gurobi_c++.h>
 #include <sstream>
 #include <string>
 #include <math.h>
 #include <vector>
+#include <iostream>
 
+#include "constant.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
-
-#include "../utils/exception/MyException.h"
 
 using namespace std;
 
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
-vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair<double, double>> speedMaxInfoPart, vector<vector<double>> predictor, string mpc_filename ,spdlog::logger logger)
+vector<vector<double>> LeaderMPCCaculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part, string mpc_filename ,spdlog::logger& logger)
 {
-	logger.info("--------------------------------------");
     logger.info("space is {}, speed is {}", space, speed);
-
-	int part_size = speedMaxInfoPart.size();
+	int part_size = speed_max_info_part.size();
 
 	try{
 		// Create an environment
@@ -31,7 +31,6 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 		double x0 = space;
 		double v0 = speed;
 		double a0 = 0;
-
 		// create control variables + function limit
 		GRBVar U[Np];
 		for (int i = 0; i < Np; i++) {
@@ -39,8 +38,7 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 			vname << "u" << i;
 			U[i] = model.addVar(-M * a_br, M * a_dr, 0.0, GRB_CONTINUOUS, vname.str());
 		}
-		
-        // create state equation
+		// create state equation
 		GRBLinExpr X[Np + 1];
 		GRBLinExpr V[Np + 1];
 		GRBLinExpr a[Np + 1];
@@ -48,9 +46,6 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 		X[0] = x0;
 		V[0] = v0;
 		a[0] = a0;
-
-        // distance between follow and leader 
-        GRBLinExpr Dis[Np];
 
 		// binary variable
 		GRBVar Z[Np][part_size];
@@ -69,10 +64,6 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 			V[i] = V[i - 1] + Ts * a[i - 1];
 		}
 
-		for(int i = 0; i < Np; i++){
-            Dis[i] = predictor[i][0] - X[i+1]; 
-        }
-
 
 		// v max
 		GRBLinExpr V_max[Np] = {0};
@@ -85,7 +76,7 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 
         for(int i = 0;i < Np;i++){
 			for(int j = 0;j < part_size;j++){
-				V_max[i] += Z[i][j] * speedMaxInfoPart[j].second; 
+				V_max[i] += Z[i][j] * speed_max_info_part[j].second; 
 			}
 		}
 
@@ -94,10 +85,10 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 			X_bound[i][0] = 0;
 			X_bound[i][1] = 0;
 			for(int j = 0;j < part_size - 1; j++){
-				X_bound[i][0] += Z[i][j+1] * speedMaxInfoPart[j].first;
+				X_bound[i][0] += Z[i][j+1] * speed_max_info_part[j].first;
 			}
 			for(int j = 0;j < part_size - 1;j++){
-				X_bound[i][1] += Z[i][j] * speedMaxInfoPart[j].first;
+				X_bound[i][1] += Z[i][j] * speed_max_info_part[j].first;
 			}
 			X_bound[i][1] += Z[i][part_size - 1] * 3000;
 		}
@@ -108,9 +99,8 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 		double u_max = a_br * M;
 		GRBQuadExpr obj = 0;
 		for (int i = 0; i < Np; i++) {
-			obj += K_l_v * (V[i + 1] - predictor[i][1])/v_max * (V[i + 1] - predictor[i][1])/v_max;
-			obj += K_l_u * U[i] / u_max  * U[i] / u_max;
-            obj += K_l_d * (1 - Dis[i]/d_des) * (1 - Dis[i]/d_des);
+			obj += Kv * (1 - V[i + 1]/v_max) * (1 - V[i + 1]/v_max);
+			obj += Ku * U[i] / u_max  * U[i] / u_max;
 		}
 
         model.update();
@@ -156,24 +146,18 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
 			model.addConstr(Z_sum[i] == 1, z_sum_name.str());
         }
 
-        //5. safe distance constraint
-        for(int i = 0; i < Np; i++){
-            ostringstream dis_name;
-			dis_name << "dis_" << i;
-			model.addConstr(Dis[i] >= d_min, dis_name.str());
-        }
-
-
      //   model.set(GRB_IntAttr_ModelSense, GRB_MINIMIZE);
 
 		model.optimize();
-		
+
 		logger.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
-			throw InfeasibleException();
+			throw "infeaible";
 
         //print state variable
+
+        
 
         ostringstream u_info;
 		ostringstream x_info;
@@ -195,7 +179,7 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
             x_lb_info << "x" << i << ":" << X_bound[i][0].getValue() << "  ";
 			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
 		}
-		
+
         logger.info("{}", u_info.str());
 		logger.info("{}", x_info.str());
         logger.info("{}", v_info.str());
@@ -203,20 +187,19 @@ vector<vector<double>> FollowMPCCaculate(double space, double speed, vector<pair
         logger.info("{}", v_max_info.str());
 		logger.info("{}", x_lb_info.str());
 		logger.info("{}", x_ub_info.str());
-		
+
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
-			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
+			result.push_back(vector<double>({X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)}));
 		}
-
 		return result;
 	}
 	catch (GRBException e) {
 		logger.error(" Error code = {}", e.getErrorCode());
 		logger.error("{}",e.getMessage());
 	}
-	catch (InfeasibleException e){
-		logger.error("{}", e.message());
+	catch (string str){
+		logger.error("{}", str);
 	}
 	catch (...) {
 	    logger.warn(" Exception during optimization ");

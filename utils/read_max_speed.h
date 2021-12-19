@@ -1,3 +1,6 @@
+#ifndef READ_MAX_SPEED_H
+#define READ_MAX_SPEED_H
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -16,3 +19,5 @@ vector<pair<double, double>> readSpeedMax(string speedLimitFile){
     }
     return speedMaxInfo;
 }
+
+#endif
