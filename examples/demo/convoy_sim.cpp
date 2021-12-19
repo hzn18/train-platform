@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:35:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 19:18:54
+ * @Last Modified time: 2021-12-19 19:42:26
  */
  
 #include <string>
@@ -24,10 +24,10 @@ enum Predictor {SH, NP, MB};
 
 using namespace std;
 
-string logger_filename = "./log/follow_log.txt";
-string mpc_logger_filename = "./log/follow_mpc_log.txt";
-string dp_input_filename = "./result/DPResult.txt";
-string follow_output_dir = "./result/";
+string logger_filename = "./logs/follow_log.txt";
+string mpc_logger_filename = "./logs/follow_mpc_log.txt";
+string dp_input_filename = "./db/DPResult.txt";
+string follow_output_dir = "./user/result";
 
 Predictor predictor_method = MB;
 

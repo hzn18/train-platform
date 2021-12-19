@@ -1,8 +1,8 @@
 /*
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:37 
- * @Last Modified by:   houzhinan 
- * @Last Modified time: 2021-12-19 15:02:37 
+ * @Last Modified by: houzhinan
+ * @Last Modified time: 2021-12-19 19:43:41
  */
 #include <string>
 #include <math.h>
@@ -20,10 +20,10 @@
 
 using namespace std;
 
-string logger_filename = "..log/log.txt";
-string mpc_logger_filename = "./log/mpc_log.txt";
-string dp_input_filename = "./result/DPResult.txt";
-string leader_output_filename = "./result/LeaderResult.txt";
+string logger_filename = "./logs/log.txt";
+string mpc_logger_filename = "./logs/mpc_log.txt";
+string dp_input_filename = "./db/DPResult.txt";
+string leader_output_filename = "./user/result/LeaderResult.txt";
 
 int main(){
     auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(logger_filename, 23, 59);
