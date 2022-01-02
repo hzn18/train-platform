@@ -38,7 +38,7 @@ convoy_sim.o: convoy_sim.cpp
 
 
 clean:
-	-rm dp dp_sim.o read_speed_limit.o 
+	-rm dp dp_sim.o read_speed_limit.o dp.o
 	-rm leader $(leader_objects) convoy $(convoy_objects)
 
 
