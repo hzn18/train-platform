@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:20 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 18:23:01
+ * @Last Modified time: 2022-01-02 19:27:57
  */
 #include "leader_MPC.h"
 
@@ -101,7 +101,6 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 
 
 		// Set objective
-		//TODO£º
 		double u_max = a_br * M;
 		GRBQuadExpr obj = 0;
 		for (int i = 0; i < Np; i++) {
