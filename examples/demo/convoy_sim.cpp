@@ -26,7 +26,7 @@ using namespace std;
 
 string logger_filename = "./logs/follow_log.txt";
 string mpc_logger_filename = "./logs/follow_mpc_log.txt";
-string dp_input_filename = "./db/dp_result.txt";
+string dp_input_filename = "./db/dp_safe_result.txt";
 string follow_output_dir = "./user/result";
 
 Predictor predictor_method = SH;

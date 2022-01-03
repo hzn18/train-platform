@@ -22,8 +22,8 @@ using namespace std;
 
 string logger_filename = "./logs/log.txt";
 string mpc_logger_filename = "./logs/mpc_log.txt";
-string dp_input_filename = "./db/dp_result.txt";
-string leader_output_filename = "./user/result/LeaderResult.txt";
+string dp_input_filename = "./db/dp_safe_result.txt";
+string leader_output_filename = "./user/result/leader_result.txt";
 
 int main(){
     auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(logger_filename, 23, 59);
