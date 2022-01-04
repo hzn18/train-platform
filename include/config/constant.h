@@ -16,6 +16,7 @@
 // params: simluation parameters
 #define delta_s 0.5 //unit: m
 #define delta_v 0.01 //unit: m/s
+#define delta_s_model 0.5 //one model need this parameter
 
 // params: dynamic programming
 #define K_dp_v 1
@@ -23,7 +24,7 @@
 
 // params: leader control 
 #define Kv 1
-#define Ku 0.08
+#define Ku 0
 
 // params: MPC step size
 #define Np 8

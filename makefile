@@ -9,6 +9,8 @@ convoy: $(convoy_objects)
 	g++ -m64 -g -o convoy $(convoy_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
 dp: dp_sim.o read_speed_limit.o dp.o
 	g++ -m64 -g -o dp dp_sim.o read_speed_limit.o dp.o
+data_driven_leader: data_driven_leader_sim.o $(base_objects)
+	g++ -m64 -g -o data_driven_leader data_driven_leader_sim.o $(base_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
 
 read_speed_max.o: read_speed_max.cpp
 	g++ -c $< -I include/environment
@@ -34,11 +36,14 @@ follow_controller.o: follow_controller.cpp
 	g++ -c $< -I include/config -I include/control -I include/calculate -I /opt/spdlog-1.x/include/
 convoy_sim.o: convoy_sim.cpp
 	g++ -c $< -I include/config -I include/environment -I include/control -I include/model -I /opt/spdlog-1.x/include/
+data_driven_leader_sim.o: data_driven_leader_sim.cpp
+	g++ -c $< -I include/config -I include/environment -I include/control -I include/model -I /opt/spdlog-1.x/include/
 
 
 
 clean:
 	-rm dp dp_sim.o read_speed_limit.o dp.o
 	-rm leader $(leader_objects) convoy $(convoy_objects)
+	-rm data_driven_leader data_driven_leader_sim.o
 
 

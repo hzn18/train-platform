@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 13:11:44 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 18:23:23
+ * @Last Modified time: 2022-01-04 14:47:24
  */
 
 #ifndef LEADER_MPC_H
@@ -13,5 +13,7 @@
 
 
 std::vector<std::vector<double>> LeaderMPCCalculate(double space, double speed, std::vector<std::pair<double, double>>& speed_max_info_part, std::string mpc_filename ,spdlog::logger& logger);
+
+std::vector<std::vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, std::vector<std::vector<double>> sample_set, std::string mpc_filename, spdlog::logger& logger);
 
 #endif

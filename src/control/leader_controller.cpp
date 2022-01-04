@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 13:30:42 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 18:24:17
+ * @Last Modified time: 2022-01-04 14:49:32
  */
 #include "leader_controller.h"
 
@@ -36,4 +36,29 @@ vector<vector<double>> LeaderController(double space, double speed, vector<pair<
 
 
 
+vector<vector<double>> DataDrivenLeaderController(double space, double speed, vector<vector<double>>& sample_safe_set, int sample_safe_set_start_index ,string mpc_filename ,spdlog::logger& logger){
+    // find points from sample safe set
+    double max_delta_space =  v_max * Ts * Np;
+    // [space, space + max_delta_space] -> [sample_safe_set_start_index, sample_safe_set_end_index]
+    // binary search
+    int left_index = sample_safe_set_start_index;
+    int right_index = sample_safe_set.size() - 1;
+    int mid = (left_index + right_index) >> 1;
+    while(left_index <= right_index){
+        if(sample_safe_set[mid][0] < space + max_delta_space){
+            left_index = mid + 1;
+        } 
+        else {
+            right_index = mid - 1;
+        }
+        mid = (left_index + right_index) >> 1;
+    }
+    int sample_safe_set_end_index = right_index;
+    // get a partly sample set
+    vector<vector<double>> sample_set;
+    for(int i = sample_safe_set_start_index; i<= sample_safe_set_end_index; i++){
+        sample_set.push_back(sample_safe_set[i]);
+    }
+    return DataDrivenLeaderMPCCalculate(space, speed, sample_set, mpc_filename, logger);
+}
 
