@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2022-01-04 19:57:39 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 20:20:16
+ * @Last Modified time: 2022-01-04 22:14:35
  */
 
 #include "logger.h"
@@ -24,7 +24,7 @@ void logger_config(){
     LOGGER.set_level(spdlog::level::info);
     DEBUG_LOGGER.set_level(spdlog::level::debug);
     MPC_LOGGER.set_level(spdlog::level::debug);
-    MPC_LOGGER.flush_on(spdlog::level::info);
+//    MPC_LOGGER.flush_on(spdlog::level::info);
 }
 
 

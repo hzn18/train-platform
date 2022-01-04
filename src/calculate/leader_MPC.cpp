@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:20 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 16:39:25
+ * @Last Modified time: 2022-01-04 22:31:07
  */
 #include "leader_MPC.h"
 
@@ -212,10 +212,22 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 
 vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, vector<vector<double>> sample_set){
 	MPC_LOGGER.info("space is {}, speed is {}", space, speed);
+    ostringstream sample_set_space_info;
+	ostringstream sample_set_speed_info;
+	ostringstream sample_set_cost_info;
+	for(int i = 0; i < sample_set.size(); i++){
+		sample_set_space_info << "set-space" << i << ":" << sample_set[i][0] << "  ";
+		sample_set_speed_info << "set-speed" << i << ":" << sample_set[i][1] << "  ";
+		sample_set_cost_info << "set-cost" << i << ":" << sample_set[i][2] << "  ";
+	}
+    MPC_LOGGER.info("{}", sample_set_space_info.str());
+	MPC_LOGGER.info("{}", sample_set_speed_info.str());
+    MPC_LOGGER.info("{}", sample_set_cost_info.str());
+
 	try{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", MPC_LOGGER_FILENAME);
+		// env.set("LogFile", MPC_LOGGER_FILENAME);
 		env.set("LogToConsole", "0");
 		env.start();// Create an empty model
 		GRBModel model = GRBModel(env);
@@ -279,7 +291,7 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		}
 
 		// terminal cost
-		obj += q_terminal;
+		// obj += q_terminal;
 
         model.update();
 
@@ -299,8 +311,11 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		model.addConstr(Z_sum == 1, "z_sum");
 
 		//4. terminal constraint
-		model.addConstr(X[Np] == x_terminal, "x_terminal");
-		model.addConstr(V[Np] == v_terminal, "v_terminal");
+        double v_error_bound =  v_max * 0.001;
+		GRBVar v_error = model.addVar(-1 * v_error_bound, v_error_bound, 0.0, GRB_CONTINUOUS, "v_error");
+
+		model.addConstr(X[Np] == x_terminal, "x_terminal");  //emmm, 这个约束有点苛刻，因为有误差精度的影响，所以给一点裕量
+		model.addConstr(V[Np] == v_terminal + v_error, "v_terminal");
 		model.optimize();
 
 		MPC_LOGGER.info("status is {}", model.get(GRB_IntAttr_Status));
@@ -313,12 +328,6 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		ostringstream x_info;
 		ostringstream v_info;
 		ostringstream a_info;
-		ostringstream v_max_info;
-		ostringstream x_lb_info;
-		ostringstream x_ub_info;
-
-        x_lb_info << "lb-> ";
-		x_ub_info << "ub-> ";
 
 		for(int i = 0; i < Np;i++){
 			u_info << "u" << i << ":" << U[i].get(GRB_DoubleAttr_X) << "  ";

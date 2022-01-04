@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2022-01-03 20:11:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 16:09:26
+ * @Last Modified time: 2022-01-04 22:11:27
  */
 
 #include <string>
@@ -68,7 +68,7 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 
 	while(1){
 		double function;
-		if(space < 1600){
+		if(space < 0.8 * speed_max_info[speed_max_info.size()-1].first){
 			function = (speed < v_stable) ? M * a_dr : -M * a_br; 
 		}
 		else{
@@ -95,7 +95,10 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 			break;
 	}
 
-	save_result(result, DATA_DRIVEN_LEADER_OUTPUT_DIR + "leader_result" + to_string(0) + ".txt");
+    string save_filename = DATA_DRIVEN_LEADER_OUTPUT_DIR;
+	save_filename +="leader_result" + to_string(0) + ".txt";
+
+	save_result(result, save_filename);
     
 	double tmp = 0;
 	for(int i = sample_set.size()-1; i>=0 ;i--){
@@ -134,6 +137,9 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 		result.push_back(vector<double>{space, speed, function});
 		one_iter_sample_safe_set.push_back(vector<double>{space, speed, ref_cost(speed, function)});
 
+        if(speed < 0)
+		    break;
+
         LOGGER.info("s: {}, v:{}, f:{}", space, speed, function);
 
         // simulation end
@@ -141,7 +147,11 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 			break;
 	}
 
-	save_result(result, DATA_DRIVEN_LEADER_OUTPUT_DIR + "leader_result" + to_string(iter_index) + ".txt");
+
+    string save_filename = DATA_DRIVEN_LEADER_OUTPUT_DIR;
+	save_filename += "leader_result" + to_string(iter_index) + ".txt";
+
+	save_result(result, save_filename);
     
 	double tmp = 0;
 	for(int i = one_iter_sample_safe_set.size()-1; i>=0 ;i--){
