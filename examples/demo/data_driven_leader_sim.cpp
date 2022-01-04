@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2022-01-03 20:11:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 22:11:27
+ * @Last Modified time: 2022-01-04 22:52:45
  */
 
 #include <string>
@@ -170,7 +170,7 @@ int main(){
     vector<vector<double>> sample_safe_set = InitSampleIteration(speed_max_info);
 
     // iteration -> sample safe set
-	for(int iter = 1; iter < 2; iter++){
+	for(int iter = 1; iter < 4; iter++){
 		vector<vector<double>> iter_sample_set = RegularIteration(iter, sample_safe_set);
         sample_safe_set = MergeSampleSafeSet(sample_safe_set, iter_sample_set);
 	}

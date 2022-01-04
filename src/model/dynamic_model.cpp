@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 12:57:36 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 14:41:16
+ * @Last Modified time: 2022-01-04 22:49:30
  */
 
 #include "dynamic_model.h"
@@ -18,8 +18,8 @@ using namespace std;
 
 vector<double> DynamicModel(double function, double space, double speed){
     double a = (function - A - B*speed  - T_f_C*speed*speed) / M;
-    double v = speed + a * Ts;
-	double s = space + speed * Ts + 0.5 * a * Ts * Ts;
+    double v = speed + a * T;
+	double s = space + speed * T + 0.5 * a * T * T;
 	return vector<double>({s, v});
 }
 

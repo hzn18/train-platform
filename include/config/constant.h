@@ -1,10 +1,10 @@
 /*
  * @Author: houzhinan 
  * @Date: 2022-01-04 15:52:59 
- * @Last Modified by:   houzhinan 
- * @Last Modified time: 2022-01-04 15:52:59 
+ * @Last Modified by: houzhinan
+ * @Last Modified time: 2022-01-04 22:52:01
  */
- 
+
 #ifndef CONSTANT_H
 #define CONSTANT_H
 
@@ -21,21 +21,26 @@
 #define j_max 0.98   //unit: m/s^3
 
 // params: simluation parameters
+#define T 0.1
+
+// params: dynamic programming
 #define delta_s 0.5 //unit: m
 #define delta_v 0.01 //unit: m/s
 #define delta_s_model 0.5 //one model need this parameter
-
-// params: dynamic programming
 #define K_dp_v 1
 #define K_dp_u 0.08
 
 // params: leader control 
-#define Kv 1
-#define Ku 0
+#define KV 1
+#define KU 0
+#define NP_ 8
+#define TS 0.1
 
-// params: MPC step size
-#define Np 8
-#define Ts 0.1
+#define KV_DATA_DRIVEN 1
+#define KU_DATA_DRIVEN 0
+#define NP_DATA_DRIVEN 8
+#define Ts_DATA_DRIVEN 0.1
+
 #define v_max 30
 
 // params: convoy control

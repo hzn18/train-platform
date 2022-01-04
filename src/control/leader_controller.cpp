@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 13:30:42 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 15:45:53
+ * @Last Modified time: 2022-01-04 22:50:02
  */
 #include "leader_controller.h"
 
@@ -12,7 +12,7 @@
 using namespace std;
 
 vector<vector<double>> LeaderController(double space, double speed, vector<pair<double, double>>& speed_max_info, int speed_max_info_index){
-    double max_delta_space =  v_max * Ts * Np;
+    double max_delta_space =  v_max * TS * NP_;
     int delta_index = ceil(max_delta_space / delta_s);
     if(delta_index + speed_max_info_index > speed_max_info.size()-1)
 		delta_index = speed_max_info.size() - 1 - speed_max_info_index;
@@ -22,7 +22,7 @@ vector<vector<double>> LeaderController(double space, double speed, vector<pair<
             v_max_temp = speed_max_info[speed_max_info_index + i].second;
 		    }
 	  }
-    max_delta_space = v_max_temp * Ts * Np;
+    max_delta_space = v_max_temp * TS * NP_;
 	  delta_index = ceil(max_delta_space / delta_s);
 	  if(delta_index + speed_max_info_index > speed_max_info.size()-1)
 		    delta_index = speed_max_info.size() - 1 - speed_max_info_index;
@@ -31,14 +31,14 @@ vector<vector<double>> LeaderController(double space, double speed, vector<pair<
 	  for(int i = 0; i <= delta_index;i++){
 		    speed_max_info_part.push_back(make_pair(speed_max_info[i + speed_max_info_index].first, speed_max_info[i + speed_max_info_index].second));
     }
-    return LeaderMPCCalculate(space, speed, speed_max_info_part);
+    return LeaderMPCCalculate(space, speed, KV, KU, NP_, TS, speed_max_info_part);
 }
 
 
 
 vector<vector<double>> DataDrivenLeaderController(double space, double speed, vector<vector<double>>& sample_safe_set, int sample_safe_set_start_index){
     // find points from sample safe set
-    double max_delta_space =  v_max * Ts * Np;
+    double max_delta_space =  v_max * Ts_DATA_DRIVEN * NP_DATA_DRIVEN;
     // [space, space + max_delta_space] -> [sample_safe_set_start_index, sample_safe_set_end_index]
     // binary search
     int left_index = sample_safe_set_start_index;
@@ -59,6 +59,6 @@ vector<vector<double>> DataDrivenLeaderController(double space, double speed, ve
     for(int i = sample_safe_set_start_index; i<= sample_safe_set_end_index; i++){
         sample_set.push_back(sample_safe_set[i]);
     }
-    return DataDrivenLeaderMPCCalculate(space, speed, sample_set);
+    return DataDrivenLeaderMPCCalculate(space, speed, KV_DATA_DRIVEN, KU_DATA_DRIVEN, NP_DATA_DRIVEN, Ts_DATA_DRIVEN, sample_set);
 }
 

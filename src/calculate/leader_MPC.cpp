@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:20 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 22:31:07
+ * @Last Modified time: 2022-01-04 22:47:22
  */
 #include "leader_MPC.h"
 
@@ -20,7 +20,7 @@ using namespace std;
 
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
-vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part)
+vector<vector<double>> LeaderMPCCalculate(double space, double speed, double Kv, double Ku, int Np, double Ts, vector<pair<double, double>>& speed_max_info_part)
 {
     MPC_LOGGER.info("space is {}, speed is {}", space, speed);
 	int part_size = speed_max_info_part.size();
@@ -210,7 +210,7 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 	return result;
 }
 
-vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, vector<vector<double>> sample_set){
+vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, double Kv, double Ku, int Np, double Ts, vector<vector<double>> sample_set){
 	MPC_LOGGER.info("space is {}, speed is {}", space, speed);
     ostringstream sample_set_space_info;
 	ostringstream sample_set_speed_info;
