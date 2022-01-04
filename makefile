@@ -1,14 +1,14 @@
-VPATH = src/calculate:src/environment:src/model:src/control:src/simulation:src/programming:examples/demo
-base_objects = leader_MPC.o read_speed_max.o dynamic_model.o leader_controller.o 
+VPATH = src/calculate:src/environment:src/model:src/control:src/simulation:src/programming:src/config:examples/demo
+base_objects = leader_MPC.o read_speed_max.o dynamic_model.o leader_controller.o logger.o
 leader_objects = leader_sim.o $(base_objects)
 convoy_objects = convoy_sim.o follow_controller.o follow_MPC.o predictor.o $(base_objects)
 
+dp: dp_sim.o read_speed_limit.o dp.o
+	g++ -m64 -g -o dp dp_sim.o read_speed_limit.o dp.o
 leader: $(leader_objects)
 	g++ -m64 -g -o leader $(leader_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
 convoy: $(convoy_objects)
 	g++ -m64 -g -o convoy $(convoy_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
-dp: dp_sim.o read_speed_limit.o dp.o
-	g++ -m64 -g -o dp dp_sim.o read_speed_limit.o dp.o
 data_driven_leader: data_driven_leader_sim.o $(base_objects)
 	g++ -m64 -g -o data_driven_leader data_driven_leader_sim.o $(base_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
 
@@ -38,7 +38,8 @@ convoy_sim.o: convoy_sim.cpp
 	g++ -c $< -I include/config -I include/environment -I include/control -I include/model -I /opt/spdlog-1.x/include/
 data_driven_leader_sim.o: data_driven_leader_sim.cpp
 	g++ -c $< -I include/config -I include/environment -I include/control -I include/model -I /opt/spdlog-1.x/include/
-
+logger.o: logger.cpp
+	g++ -c $< -I include/config -I /opt/spdlog-1.x/include/
 
 
 clean:
