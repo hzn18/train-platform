@@ -2,48 +2,28 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:37 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 21:02:28
+ * @Last Modified time: 2022-01-04 16:38:11
  */
 #include <string>
 #include <math.h>
 #include <fstream>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/daily_file_sink.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/sinks/basic_file_sink.h"
-
+#include "logger.h"
 #include "constant.h"
+#include "filename.h"
+
 #include "read_speed_max.h"
 #include "leader_controller.h"
 #include "dynamic_model.h"
 
 using namespace std;
 
-string logger_filename = "./logs/log.txt";
-string mpc_logger_filename = "./logs/mpc_log.txt";
-string dp_input_filename = "./db/dp_safe_result.txt";
-string leader_output_filename = "./user/result/leader_result.txt";
-
 int main(){
-    auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(logger_filename, 23, 59);
-	auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::info);
-
-    spdlog::sinks_init_list sink_list = { daily_sink, console_sink };
-	spdlog::logger logger("console", sink_list.begin(), sink_list.end());
-    logger.set_level(spdlog::level::info);
-
-    auto debug_control_logger = spdlog::logger("leader_debug", daily_sink);
-    debug_control_logger.set_level(spdlog::level::debug);
-
-	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(mpc_logger_filename);
-	auto mpc_logger= spdlog::logger("mpc_log", mpc_sink);
-	mpc_logger.set_level(spdlog::level::debug);
-	mpc_logger.flush_on(spdlog::level::info);
+    //logger manage
+	logger_config();
 
 	// read max speed info
-	vector<pair<double, double>> speed_max_info = ReadSpeedMax(dp_input_filename);
+	vector<pair<double, double>> speed_max_info = ReadSpeedMax(DP_SAFE_OUTPUT_FILENAME);
  
     vector<vector<double>> result; //space, speed, function
 
@@ -55,7 +35,7 @@ int main(){
 	while(1){
 
         // calculate the function
-	    vector<vector<double>> mpc_list = LeaderController(space, speed, speed_max_info, speed_max_info_index, mpc_logger_filename, mpc_logger);
+	    vector<vector<double>> mpc_list = LeaderController(space, speed, speed_max_info, speed_max_info_index);
          
 		double function = mpc_list[0][2];
 		
@@ -70,7 +50,7 @@ int main(){
 
 		result.push_back(vector<double>{space, speed, function});
 
-        logger.info("s: {}, v:{}, f:{}", space, speed, function);
+        LOGGER.info("s: {}, v:{}, f:{}", space, speed, function);
 
         // simulation end
 
@@ -78,7 +58,7 @@ int main(){
 			break;
 	}
     
-	ofstream fout(leader_output_filename);
+	ofstream fout(LEADER_OUTPUT_FILENAME);
     for(auto train_state : result){
         fout << train_state[0] << " " << train_state[1] << " " << train_state[2] << endl;
     }

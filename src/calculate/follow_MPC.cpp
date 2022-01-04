@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:17 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 19:15:58
+ * @Last Modified time: 2022-01-04 16:09:44
  */
 
 #include "follow_MPC.h"
@@ -13,9 +13,9 @@
 #include <math.h>
 #include <vector>
 
+#include "logger.h"
 #include "constant.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h"
+
 
 
 using namespace std;
@@ -23,22 +23,14 @@ using namespace std;
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
 
-vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, double space, double speed, std::vector<std::pair<double, double>> speed_max_info_part, string mpc_filename, spdlog::logger logger)
+vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, double space, double speed, std::vector<std::pair<double, double>> speed_max_info_part)
 {
-//    vector<vector<double>> predictor;
- //   vector<pair<double, double>> speed_max_info_part;
-//    string mpc_filename;
-  //  spdlog::logger mylogger();
-
-//	mylogger.info("--------------------------------------");
- //   mylogger.info("space is {}, speed is {}", space, speed);
-
 	int part_size = speed_max_info_part.size();
 
 	try{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", mpc_filename);
+		env.set("LogFile", MPC_LOGGER_FILENAME);
 		env.set("LogToConsole", "0");
 		env.start();// Create an empty model
 		GRBModel model = GRBModel(env);
@@ -134,16 +126,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 
 		// create constraint:
 		//1. power constraint
-        /*
-		for (int i = 1; i <= Np; i++) {
-			ostringstream p_lb_name;
-			ostringstream p_ub_name;
-			p_lb_name << "p_lb_" << i - 1;
-			p_ub_name << "p_ub_" << i - 1;
-			model.addQConstr(V[i] * U[i - 1] >= -P_br, p_lb_name.str());
-			model.addQConstr(V[i] * U[i - 1] <= P_dr, p_ub_name.str());
-		}
-        */
+        //TODO:
 		//2. speed constraint
 		for (int i = 1; i <= Np; i++) {
 			ostringstream v_lb_name;
@@ -178,12 +161,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 			model.addConstr(Dis[i] >= d_min, dis_name.str());
         }
 
-
-     //   model.set(GRB_IntAttr_ModelSense, GRB_MINIMIZE);
-
 		model.optimize();
-		
-//		mylogger.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
 			throw "infeasible";
@@ -210,15 +188,15 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
             x_lb_info << "x" << i << ":" << X_bound[i][0].getValue() << "  ";
 			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
 		}
-/*		
-        mylogger.info("{}", u_info.str());
-		mylogger.info("{}", x_info.str());
-        mylogger.info("{}", v_info.str());
-		mylogger.info("{}", a_info.str());
-        mylogger.info("{}", v_max_info.str());
-		mylogger.info("{}", x_lb_info.str());
-		mylogger.info("{}", x_ub_info.str());
-*/		
+		
+        MPC_LOGGER.info("{}", u_info.str());
+		MPC_LOGGER.info("{}", x_info.str());
+        MPC_LOGGER.info("{}", v_info.str());
+		MPC_LOGGER.info("{}", a_info.str());
+        MPC_LOGGER.info("{}", v_max_info.str());
+		MPC_LOGGER.info("{}", x_lb_info.str());
+		MPC_LOGGER.info("{}", x_ub_info.str());
+		
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
 			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
@@ -227,14 +205,14 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		return result;
 	}
 	catch (GRBException e) {
-//		mylogger.error(" Error code = {}", e.getErrorCode());
-//		mylogger.error("{}",e.getMessage());
+		MPC_LOGGER.error(" Error code = {}", e.getErrorCode());
+		MPC_LOGGER.error("{}",e.getMessage());
 	}
 	catch (string str){
-//		mylogger.error("{}", str);
+		MPC_LOGGER.error("{}", str);
 	}
 	catch (...) {
-//	    mylogger.warn(" Exception during optimization ");
+	    MPC_LOGGER.warn(" Exception during optimization ");
     }
 
     // 抛出异常，以最保守方式估计

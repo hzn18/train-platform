@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:02:20 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 14:48:20
+ * @Last Modified time: 2022-01-04 16:39:25
  */
 #include "leader_MPC.h"
 
@@ -13,23 +13,22 @@
 #include <vector>
 #include <iostream>
 
+#include "logger.h"
 #include "constant.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h"
 
 using namespace std;
 
 //output: 二维数组 [[x[0], v[0], u[0]], [x[1], v[1], u[1]], ... , [x[Np-1], v[Np-1], u[Np-1]]]
 
-vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part, string mpc_filename ,spdlog::logger& logger)
+vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pair<double, double>>& speed_max_info_part)
 {
-    logger.info("space is {}, speed is {}", space, speed);
+    MPC_LOGGER.info("space is {}, speed is {}", space, speed);
 	int part_size = speed_max_info_part.size();
 
 	try{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", mpc_filename);
+		env.set("LogFile", MPC_LOGGER_FILENAME);
 		env.set("LogToConsole", "0");
 		env.start();// Create an empty model
 		GRBModel model = GRBModel(env);
@@ -114,16 +113,7 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 
 		// create constraint:
 		//1. power constraint
-        /*
-		for (int i = 1; i <= Np; i++) {
-			ostringstream p_lb_name;
-			ostringstream p_ub_name;
-			p_lb_name << "p_lb_" << i - 1;
-			p_ub_name << "p_ub_" << i - 1;
-			model.addQConstr(V[i] * U[i - 1] >= -P_br, p_lb_name.str());
-			model.addQConstr(V[i] * U[i - 1] <= P_dr, p_ub_name.str());
-		}
-        */
+        //TODO:
 		//2. speed constraint
 		for (int i = 1; i <= Np; i++) {
 			ostringstream v_lb_name;
@@ -150,20 +140,14 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 			z_sum_name << "z_sum_" << i;
 			model.addConstr(Z_sum[i] == 1, z_sum_name.str());
         }
-
-     //   model.set(GRB_IntAttr_ModelSense, GRB_MINIMIZE);
-
 		model.optimize();
 
-		logger.info("status is {}", model.get(GRB_IntAttr_Status));
+		MPC_LOGGER.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
 			throw "infeaible";
 
         //print state variable
-
-        
-
         ostringstream u_info;
 		ostringstream x_info;
 		ostringstream v_info;
@@ -185,13 +169,13 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 			x_ub_info << "x" << i << ":" << X_bound[i][1].getValue() << "  ";
 		}
 
-        logger.info("{}", u_info.str());
-		logger.info("{}", x_info.str());
-        logger.info("{}", v_info.str());
-		logger.info("{}", a_info.str());
-        logger.info("{}", v_max_info.str());
-		logger.info("{}", x_lb_info.str());
-		logger.info("{}", x_ub_info.str());
+        MPC_LOGGER.info("{}", u_info.str());
+		MPC_LOGGER.info("{}", x_info.str());
+        MPC_LOGGER.info("{}", v_info.str());
+		MPC_LOGGER.info("{}", a_info.str());
+        MPC_LOGGER.info("{}", v_max_info.str());
+		MPC_LOGGER.info("{}", x_lb_info.str());
+		MPC_LOGGER.info("{}", x_ub_info.str());
 
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
@@ -200,14 +184,14 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 		return result;
 	}
 	catch (GRBException e) {
-		logger.error(" Error code = {}", e.getErrorCode());
-		logger.error("{}",e.getMessage());
+		MPC_LOGGER.error(" Error code = {}", e.getErrorCode());
+		MPC_LOGGER.error("{}",e.getMessage());
 	}
 	catch (string str){
-		logger.error("{}", str);
+		MPC_LOGGER.error("{}", str);
 	}
 	catch (...) {
-	    logger.warn(" Exception during optimization ");
+	    MPC_LOGGER.warn(" Exception during optimization ");
     }
 
     // 抛出异常，以最保守方式估计
@@ -226,13 +210,12 @@ vector<vector<double>> LeaderMPCCalculate(double space, double speed, vector<pai
 	return result;
 }
 
-vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, vector<vector<double>> sample_set, string mpc_filename, spdlog::logger& logger){
-	logger.info("space is {}, speed is {}", space, speed);
-
+vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, vector<vector<double>> sample_set){
+	MPC_LOGGER.info("space is {}, speed is {}", space, speed);
 	try{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", mpc_filename);
+		env.set("LogFile", MPC_LOGGER_FILENAME);
 		env.set("LogToConsole", "0");
 		env.start();// Create an empty model
 		GRBModel model = GRBModel(env);
@@ -304,16 +287,7 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 
 		// create constraint:
 		//1. power constraint
-        /*
-		for (int i = 1; i <= Np; i++) {
-			ostringstream p_lb_name;
-			ostringstream p_ub_name;
-			p_lb_name << "p_lb_" << i - 1;
-			p_ub_name << "p_ub_" << i - 1;
-			model.addQConstr(V[i] * U[i - 1] >= -P_br, p_lb_name.str());
-			model.addQConstr(V[i] * U[i - 1] <= P_dr, p_ub_name.str());
-		}
-        */
+        //TODO:
 		//2. speed constraint
 		for (int i = 1; i <= Np; i++) {
 			ostringstream v_lb_name;
@@ -327,12 +301,9 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		//4. terminal constraint
 		model.addConstr(X[Np] == x_terminal, "x_terminal");
 		model.addConstr(V[Np] == v_terminal, "v_terminal");
-
-     //   model.set(GRB_IntAttr_ModelSense, GRB_MINIMIZE);
-
 		model.optimize();
 
-		logger.info("status is {}", model.get(GRB_IntAttr_Status));
+		MPC_LOGGER.info("status is {}", model.get(GRB_IntAttr_Status));
 
 		if(model.get(GRB_IntAttr_Status) == 3)   // 无可行解，以最保守的方式估计
 			throw "infeasible";
@@ -356,10 +327,10 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 			a_info << "a" << i << ":" << a[i].getValue() << "  ";
 		}
 
-        logger.info("{}", u_info.str());
-		logger.info("{}", x_info.str());
-        logger.info("{}", v_info.str());
-		logger.info("{}", a_info.str());
+        MPC_LOGGER.info("{}", u_info.str());
+		MPC_LOGGER.info("{}", x_info.str());
+        MPC_LOGGER.info("{}", v_info.str());
+		MPC_LOGGER.info("{}", a_info.str());
 
         vector<vector<double>> result;
 		for(int i = 0; i < Np; i++){
@@ -368,14 +339,14 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		return result;
 	}
 	catch (GRBException e) {
-		logger.error(" Error code = {}", e.getErrorCode());
-		logger.error("{}",e.getMessage());
+		MPC_LOGGER.error(" Error code = {}", e.getErrorCode());
+		MPC_LOGGER.error("{}",e.getMessage());
 	}
 	catch (string str){
-		logger.error("{}", str);
+		MPC_LOGGER.error("{}", str);
 	}
 	catch (...) {
-	    logger.warn(" Exception during optimization ");
+	    MPC_LOGGER.warn(" Exception during optimization ");
     }
 
     // 抛出异常，以最保守方式估计

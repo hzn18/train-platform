@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2021-12-19 15:36:02 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2021-12-19 19:21:50
+ * @Last Modified time: 2022-01-04 15:41:46
  */
 
 #include "follow_controller.h"
@@ -40,28 +40,28 @@ vector<pair<double, double>> CutSpeedMaxInfo(vector<pair<double, double>>& speed
     return speed_max_info_part;
 }
 
-vector<vector<double>> FollowController(double leader_space, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index, string mpc_filename, spdlog::logger logger){
+vector<vector<double>> FollowController(double leader_space, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index){
     vector<pair<double, double>> speed_max_info_part = CutSpeedMaxInfo(speed_max_info , speed_max_info_index);
 
     vector<vector<double>> MB_predictor = MBPredictor(leader_space);
 
-    return FollowMPCCalculate(MB_predictor, space, speed, speed_max_info_part, mpc_filename, logger);
+    return FollowMPCCalculate(MB_predictor, space, speed, speed_max_info_part);
 }
 
 
 
-vector<vector<double>> FollowController(double leader_space, double leader_speed, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index, string mpc_filename ,spdlog::logger logger){
+vector<vector<double>> FollowController(double leader_space, double leader_speed, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index){
     vector<pair<double, double>> speed_max_info_part = CutSpeedMaxInfo(speed_max_info , speed_max_info_index);
 
     vector<vector<double>> NP_predictor = NPPredictor(leader_space, leader_speed);
 
-    return FollowMPCCalculate(NP_predictor, space, speed, speed_max_info_part, mpc_filename, logger);
+    return FollowMPCCalculate(NP_predictor, space, speed, speed_max_info_part);
 }
 
-vector<vector<double>> FollowController(vector<vector<double>> leader_mpc_result, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index, string mpc_filename ,spdlog::logger logger){
+vector<vector<double>> FollowController(vector<vector<double>> leader_mpc_result, double space, double speed, vector<pair<double, double>> speed_max_info, int speed_max_info_index){
     vector<pair<double, double>> speed_max_info_part = CutSpeedMaxInfo(speed_max_info , speed_max_info_index);
 
     vector<vector<double>> SH_predictor = SHPredictor(leader_mpc_result);
     
-    return FollowMPCCalculate(SH_predictor, space, speed, speed_max_info_part, mpc_filename, logger);
+    return FollowMPCCalculate(SH_predictor, space, speed, speed_max_info_part);
 }

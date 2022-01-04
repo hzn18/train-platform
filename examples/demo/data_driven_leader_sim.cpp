@@ -2,29 +2,23 @@
  * @Author: houzhinan 
  * @Date: 2022-01-03 20:11:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 15:10:46
+ * @Last Modified time: 2022-01-04 16:09:26
  */
 
 #include <string>
 #include <math.h>
 #include <fstream>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/daily_file_sink.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/sinks/basic_file_sink.h"
 
+#include "logger.h"
 #include "constant.h"
+#include "filename.h"
+
 #include "read_speed_max.h"
 #include "leader_controller.h"
 #include "dynamic_model.h"
 
 using namespace std;
-
-string logger_filename = "./logs/log.txt";
-string mpc_logger_filename = "./logs/mpc_log.txt";
-string dp_input_filename = "./db/dp_safe_result.txt";
-string leader_output_dir = "./user/result/";
 
 // consider speed and energy.
 double ref_cost(double v, double u){
@@ -61,7 +55,7 @@ vector<vector<double>> MergeSampleSafeSet(vector<vector<double>> sample_set_1, v
 	return merged_sample_set;
 }
 
-vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_max_info, spdlog::logger logger, spdlog::logger mpc_logger){
+vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_max_info){
     double v_stable = 3;
 
     vector<vector<double>> result; //space, speed, function
@@ -79,7 +73,7 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 		}
 		else{
 			// calculate the function
-	    	vector<vector<double>> mpc_list = LeaderController(space, speed, speed_max_info, speed_max_info_index, mpc_logger_filename, mpc_logger);
+	    	vector<vector<double>> mpc_list = LeaderController(space, speed, speed_max_info, speed_max_info_index);
 			function = mpc_list[0][2];
 		}
         // control the train 
@@ -94,14 +88,14 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 		result.push_back(vector<double>{space, speed, function});
 		sample_set.push_back(vector<double>{space, speed, ref_cost(speed, function)});
 
-        logger.info("s: {}, v:{}, f:{}", space, speed, function);
+        LOGGER.info("s: {}, v:{}, f:{}", space, speed, function);
 
         // simulation end
 		if(speed_max_info[speed_max_info.size() - 1].first - space < 1 )
 			break;
 	}
 
-	save_result(result, leader_output_dir + "leader_result" + to_string(0) + ".txt");
+	save_result(result, DATA_DRIVEN_LEADER_OUTPUT_DIR + "leader_result" + to_string(0) + ".txt");
     
 	double tmp = 0;
 	for(int i = sample_set.size()-1; i>=0 ;i--){
@@ -112,7 +106,7 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 	return sample_set;
 }
 
-vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> sample_safe_set, spdlog::logger logger, spdlog::logger mpc_logger){
+vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> sample_safe_set){
     vector<vector<double>> result; //space, speed, function
 	vector<vector<double>> one_iter_sample_safe_set;
 
@@ -123,7 +117,7 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 
 	while(1){
 		// calculate the function
-	    vector<vector<double>> mpc_list = DataDrivenLeaderController(space, speed, sample_safe_set, sample_safe_set_index, mpc_logger_filename, mpc_logger);
+	    vector<vector<double>> mpc_list = DataDrivenLeaderController(space, speed, sample_safe_set, sample_safe_set_index);
 		double function = mpc_list[0][2];
         
 		// control the train 
@@ -140,14 +134,14 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 		result.push_back(vector<double>{space, speed, function});
 		one_iter_sample_safe_set.push_back(vector<double>{space, speed, ref_cost(speed, function)});
 
-        logger.info("s: {}, v:{}, f:{}", space, speed, function);
+        LOGGER.info("s: {}, v:{}, f:{}", space, speed, function);
 
         // simulation end
 		if(sample_safe_set[sample_safe_set.size() - 1][0] - space < 0.5)
 			break;
 	}
 
-	save_result(result, leader_output_dir + "leader_result" + to_string(iter_index) + ".txt");
+	save_result(result, DATA_DRIVEN_LEADER_OUTPUT_DIR + "leader_result" + to_string(iter_index) + ".txt");
     
 	double tmp = 0;
 	for(int i = one_iter_sample_safe_set.size()-1; i>=0 ;i--){
@@ -159,31 +153,15 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 }
 
 int main(){
-    auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(logger_filename, 23, 59);
-	auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::info);
-
-    spdlog::sinks_init_list sink_list = { daily_sink, console_sink };
-	spdlog::logger logger("console", sink_list.begin(), sink_list.end());
-    logger.set_level(spdlog::level::info);
-
-    auto debug_control_logger = spdlog::logger("leader_debug", daily_sink);
-    debug_control_logger.set_level(spdlog::level::debug);
-
-	auto mpc_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(mpc_logger_filename);
-	auto mpc_logger= spdlog::logger("mpc_log", mpc_sink);
-	mpc_logger.set_level(spdlog::level::debug);
-	mpc_logger.flush_on(spdlog::level::info);
-
 	// read max speed info
-	vector<pair<double, double>> speed_max_info = ReadSpeedMax(dp_input_filename);
+	vector<pair<double, double>> speed_max_info = ReadSpeedMax(DP_SAFE_OUTPUT_FILENAME);
 
     // init sample safe set
-    vector<vector<double>> sample_safe_set = InitSampleIteration(speed_max_info, logger, mpc_logger);
+    vector<vector<double>> sample_safe_set = InitSampleIteration(speed_max_info);
 
     // iteration -> sample safe set
 	for(int iter = 1; iter < 2; iter++){
-		vector<vector<double>> iter_sample_set = RegularIteration(iter, sample_safe_set, logger, mpc_logger);
+		vector<vector<double>> iter_sample_set = RegularIteration(iter, sample_safe_set);
         sample_safe_set = MergeSampleSafeSet(sample_safe_set, iter_sample_set);
 	}
 }
