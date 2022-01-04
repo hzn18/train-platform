@@ -3,8 +3,10 @@ base_objects = leader_MPC.o read_speed_max.o dynamic_model.o leader_controller.o
 leader_objects = leader_sim.o $(base_objects)
 convoy_objects = convoy_sim.o follow_controller.o follow_MPC.o predictor.o $(base_objects)
 
-dp: dp_sim.o read_speed_limit.o dp.o
-	g++ -m64 -g -o dp dp_sim.o read_speed_limit.o dp.o
+dp_ref: dp_ref_sim.o read_speed_limit.o dp.o
+	g++ -m64 -g -o dp_ref dp_ref_sim.o read_speed_limit.o dp.o
+dp_safe: dp_safe_sim.o read_speed_limit.o dp.o
+	g++ -m64 -g -o dp_safe dp_safe_sim.o read_speed_limit.o dp.o
 leader: $(leader_objects)
 	g++ -m64 -g -o leader $(leader_objects) -L /opt/gurobi950/linux64/lib -l gurobi_g++5.2 -l gurobi95 -lm
 convoy: $(convoy_objects)
@@ -18,7 +20,9 @@ read_speed_limit.o: read_speed_limit.cpp
 	g++ -c $< -I include/environment
 dp.o: dp.cpp
 	g++ -c $< -I include/config -I include/programming
-dp_sim.o: dp_sim.cpp
+dp_safe_sim.o: dp_safe_sim.cpp
+	g++ -c $< -I include/config -I include/environment -I include/programming
+dp_ref_sim.o: dp_ref_sim.cpp
 	g++ -c $< -I include/config -I include/environment -I include/programming
 dynamic_model.o: dynamic_model.cpp
 	g++ -c $< -I include/config -I include/model
@@ -43,7 +47,7 @@ logger.o: logger.cpp
 
 
 clean:
-	-rm dp dp_sim.o read_speed_limit.o dp.o
+	-rm dp_safe dp_ref dp_safe_sim.o dp_ref_sim.o read_speed_limit.o dp.o
 	-rm leader $(leader_objects) convoy $(convoy_objects)
 	-rm data_driven_leader data_driven_leader_sim.o
 
