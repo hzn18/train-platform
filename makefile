@@ -1,5 +1,5 @@
 VPATH = src/calculate:src/environment:src/model:src/control:src/simulation:src/programming:src/config:examples/demo
-base_objects = leader_MPC.o read_speed_max.o dynamic_model.o leader_controller.o logger.o
+base_objects = leader_MPC.o read_speed_max.o dynamic_model.o leader_controller.o logger.o read_speed_limit.o
 leader_objects = leader_sim.o $(base_objects)
 convoy_objects = convoy_sim.o follow_controller.o follow_MPC.o predictor.o $(base_objects)
 

@@ -2,7 +2,7 @@
  * @Author: houzhinan 
  * @Date: 2022-01-04 15:52:59 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 22:52:01
+ * @Last Modified time: 2022-01-05 12:45:44
  */
 
 #ifndef CONSTANT_H
@@ -20,7 +20,7 @@
 #define P_dr  120000 //unit: w
 #define j_max 0.98   //unit: m/s^3
 
-// params: simluation parameters
+// params: simulation parameters
 #define T 0.1
 
 // params: dynamic programming
@@ -32,7 +32,7 @@
 
 // params: leader control 
 #define KV 1
-#define KU 0
+#define KU 0.01
 #define NP_ 8
 #define TS 0.1
 

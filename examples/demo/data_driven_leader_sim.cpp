@@ -2,19 +2,19 @@
  * @Author: houzhinan 
  * @Date: 2022-01-03 20:11:50 
  * @Last Modified by: houzhinan
- * @Last Modified time: 2022-01-04 22:52:45
+ * @Last Modified time: 2022-01-05 14:13:59
  */
 
 #include <string>
 #include <math.h>
 #include <fstream>
 
-
 #include "logger.h"
 #include "constant.h"
 #include "filename.h"
 
 #include "read_speed_max.h"
+#include "read_speed_limit.h"
 #include "leader_controller.h"
 #include "dynamic_model.h"
 
@@ -56,7 +56,7 @@ vector<vector<double>> MergeSampleSafeSet(vector<vector<double>> sample_set_1, v
 }
 
 vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_max_info){
-    double v_stable = 3;
+    double v_stable = 6;
 
     vector<vector<double>> result; //space, speed, function
 	vector<vector<double>> sample_set;
@@ -109,7 +109,7 @@ vector<vector<double>> InitSampleIteration(vector<pair<double, double>> speed_ma
 	return sample_set;
 }
 
-vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> sample_safe_set){
+vector<vector<double>> RegularIteration(int iter_index, vector<pair<double, double>> speed_limit_info, vector<vector<double>> sample_safe_set){
     vector<vector<double>> result; //space, speed, function
 	vector<vector<double>> one_iter_sample_safe_set;
 
@@ -120,7 +120,7 @@ vector<vector<double>> RegularIteration(int iter_index, vector<vector<double>> s
 
 	while(1){
 		// calculate the function
-	    vector<vector<double>> mpc_list = DataDrivenLeaderController(space, speed, sample_safe_set, sample_safe_set_index);
+	    vector<vector<double>> mpc_list = DataDrivenLeaderController(space, speed, speed_limit_info, 0, sample_safe_set, sample_safe_set_index);
 		double function = mpc_list[0][2];
         
 		// control the train 
@@ -166,12 +166,22 @@ int main(){
 	// read max speed info
 	vector<pair<double, double>> speed_max_info = ReadSpeedMax(DP_SAFE_OUTPUT_FILENAME);
 
+	vector<pair<double, double>> speed_limit_info = ReadSpeedLimit(DB_FILENAME);
+    
+	vector<pair<double, double>> transformed_speed_limit_info;
+	for(int i = 0; i < speed_limit_info.size() - 1; i++){
+		transformed_speed_limit_info.push_back(make_pair(speed_limit_info[i].first, speed_limit_info[i].second));
+	}
+
     // init sample safe set
     vector<vector<double>> sample_safe_set = InitSampleIteration(speed_max_info);
 
+    LOGGER.info("sample safe set length is {}", sample_safe_set.size());
+
     // iteration -> sample safe set
-	for(int iter = 1; iter < 4; iter++){
-		vector<vector<double>> iter_sample_set = RegularIteration(iter, sample_safe_set);
+	for(int iter = 1; iter < 40; iter++){
+		vector<vector<double>> iter_sample_set = RegularIteration(iter, transformed_speed_limit_info, sample_safe_set);
         sample_safe_set = MergeSampleSafeSet(sample_safe_set, iter_sample_set);
+		LOGGER.info("sample safe set length is {}", sample_safe_set.size());
 	}
 }
