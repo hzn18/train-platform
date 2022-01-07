@@ -229,7 +229,8 @@ vector<vector<double>> DataDrivenLeaderMPCCalculate(double space, double speed, 
 		GRBEnv env = GRBEnv(true);
 		// env.set("LogFile", MPC_LOGGER_FILENAME);
 		env.set("LogToConsole", "0");
-		env.start();// Create an empty model
+		env.start();
+		// Create a model
 		GRBModel model = GRBModel(env);
 		// initial state
 		double x0 = space;
