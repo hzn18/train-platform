@@ -179,7 +179,7 @@ int main(){
     LOGGER.info("sample safe set length is {}", sample_safe_set.size());
 
     // iteration -> sample safe set
-	for(int iter = 1; iter < 40; iter++){
+	for(int iter = 1; iter < 2; iter++){
 		vector<vector<double>> iter_sample_set = RegularIteration(iter, transformed_speed_limit_info, sample_safe_set);
         sample_safe_set = MergeSampleSafeSet(sample_safe_set, iter_sample_set);
 		LOGGER.info("sample safe set length is {}", sample_safe_set.size());
