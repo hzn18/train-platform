@@ -40,28 +40,28 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		double a0 = 0;
 
 		// create control variables + function limit
-		GRBVar U[Np];
-		for (int i = 0; i < Np; i++) {
+		GRBVar U[NP_];
+		for (int i = 0; i < NP_; i++) {
 			ostringstream vname;
 			vname << "u" << i;
 			U[i] = model.addVar(-M * a_br, M * a_dr, 0.0, GRB_CONTINUOUS, vname.str());
 		}
 		
         // create state equation
-		GRBLinExpr X[Np + 1];
-		GRBLinExpr V[Np + 1];
-		GRBLinExpr a[Np + 1];
+		GRBLinExpr X[NP_ + 1];
+		GRBLinExpr V[NP_ + 1];
+		GRBLinExpr a[NP_ + 1];
 
 		X[0] = x0;
 		V[0] = v0;
 		a[0] = a0;
 
         // distance between follow and leader 
-        GRBLinExpr Dis[Np];
+        GRBLinExpr Dis[NP_];
 
 		// binary variable
-		GRBVar Z[Np][part_size];
-		for (int i = 0; i < Np; i++) {
+		GRBVar Z[NP_][part_size];
+		for (int i = 0; i < NP_; i++) {
 			for (int j = 0; j < part_size;j++){
 				ostringstream vname;
 			    vname << "Z_" << i << "_" << j;
@@ -70,34 +70,34 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		}
 
 		// dynamic equation
-		for (int i = 1; i <= Np; i++) {
+		for (int i = 1; i <= NP_; i++) {
 			a[i - 1] = (U[i - 1] - A - B * V[i - 1]) / M;
-			X[i] = X[i - 1] + Ts * V[i - 1] + 0.5 * Ts * Ts * a[i - 1];
-			V[i] = V[i - 1] + Ts * a[i - 1];
+			X[i] = X[i - 1] + TS * V[i - 1] + 0.5 * TS * TS * a[i - 1];
+			V[i] = V[i - 1] + TS * a[i - 1];
 		}
 
-		for(int i = 0; i < Np; i++){
+		for(int i = 0; i < NP_; i++){
             Dis[i] = predictor[i][0] - X[i+1]; 
         }
 
 
 		// v max
-		GRBLinExpr V_max[Np] = {0};
-        GRBLinExpr Z_sum[Np] = {0};
-        for(int i = 0;i < Np;i++){
+		GRBLinExpr V_max[NP_] = {0};
+        GRBLinExpr Z_sum[NP_] = {0};
+        for(int i = 0;i < NP_;i++){
             for(int j = 0; j < part_size;j++){
                 Z_sum[i] += Z[i][j];
             }
         }
 
-        for(int i = 0;i < Np;i++){
+        for(int i = 0;i < NP_;i++){
 			for(int j = 0;j < part_size;j++){
 				V_max[i] += Z[i][j] * speed_max_info_part[j].second; 
 			}
 		}
 
-        GRBLinExpr X_bound[Np][2];
-		for(int i = 0;i < Np;i++){
+        GRBLinExpr X_bound[NP_][2];
+		for(int i = 0;i < NP_;i++){
 			X_bound[i][0] = 0;
 			X_bound[i][1] = 0;
 			for(int j = 0;j < part_size - 1; j++){
@@ -114,10 +114,10 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		//TODO£º
 		double u_max = a_br * M;
 		GRBQuadExpr obj = 0;
-		for (int i = 0; i < Np; i++) {
-			obj += K_l_v * (V[i + 1] - predictor[i][1])/v_max * (V[i + 1] - predictor[i][1])/v_max;
-			obj += K_l_u * U[i] / u_max  * U[i] / u_max;
-            obj += K_l_d * (1 - Dis[i]/d_des) * (1 - Dis[i]/d_des);
+		for (int i = 0; i < NP_; i++) {
+			obj += K_f_v * (V[i + 1] - predictor[i][1])/v_max * (V[i + 1] - predictor[i][1])/v_max;
+			obj += K_f_u * U[i] / u_max  * U[i] / u_max;
+            obj += K_f_d * (1 - Dis[i]/d_des) * (1 - Dis[i]/d_des);
 		}
 
         model.update();
@@ -128,7 +128,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		//1. power constraint
         //TODO:
 		//2. speed constraint
-		for (int i = 1; i <= Np; i++) {
+		for (int i = 1; i <= NP_; i++) {
 			ostringstream v_lb_name;
 			ostringstream v_ub_name;
 			v_lb_name << "v_lb_" << i - 1;
@@ -138,7 +138,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		}
 
 		//3. M method
-		for(int i = 1; i <= Np;i++){
+		for(int i = 1; i <= NP_;i++){
 			ostringstream x_lb_name;
 			ostringstream x_ub_name;
 			x_lb_name << "x_lb_" << i - 1;
@@ -148,14 +148,14 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		}
         
         //4. integer constraint
-        for(int i = 0; i < Np;i++){
+        for(int i = 0; i < NP_;i++){
             ostringstream z_sum_name;
 			z_sum_name << "z_sum_" << i;
 			model.addConstr(Z_sum[i] == 1, z_sum_name.str());
         }
 
         //5. safe distance constraint
-        for(int i = 0; i < Np; i++){
+        for(int i = 0; i < NP_; i++){
             ostringstream dis_name;
 			dis_name << "dis_" << i;
 			model.addConstr(Dis[i] >= d_min, dis_name.str());
@@ -179,7 +179,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
         x_lb_info << "lb-> ";
 		x_ub_info << "ub-> ";
 
-		for(int i = 0; i < Np;i++){
+		for(int i = 0; i < NP_;i++){
 			u_info << "u" << i << ":" << U[i].get(GRB_DoubleAttr_X) << "  ";
 			x_info << "x" << i << ":" << X[i+1].getValue() << "  ";
 			v_info << "v" << i << ":" << V[i+1].getValue() << "  ";
@@ -198,7 +198,7 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
 		MPC_LOGGER.info("{}", x_ub_info.str());
 		
         vector<vector<double>> result;
-		for(int i = 0; i < Np; i++){
+		for(int i = 0; i < NP_; i++){
 			result.push_back(vector<double>{X[i+1].getValue() , V[i+1].getValue(), U[i].get(GRB_DoubleAttr_X)});
 		}
 
@@ -221,10 +221,10 @@ vector<vector<double>> FollowMPCCalculate(vector<vector<double>> predictor, doub
     double function = -M * a_br;
     double v = speed;
 	double s = space;
-	for(int i = 0; i < Np; i++){
+	for(int i = 0; i < NP_; i++){
         double a = (function - A - B * v  - T_f_C * v * v) / M;
-        v += a * Ts;
-	    s += v * Ts + 0.5 * a * Ts * Ts;
+        v += a * TS;
+	    s += v * TS + 0.5 * a * TS * TS;
 		result.push_back(vector<double>({s, v, function}));
 	}
 

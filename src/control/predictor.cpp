@@ -19,10 +19,10 @@ vector<vector<double>> NPPredictor(double space, double speed){
     double function = -M * a_br;
     double v = speed;
 	double s = space;
-	for(int i = 0; i < Np; i++){
+	for(int i = 0; i < NP_; i++){
         double a = (function - A - B * v  - T_f_C * v * v) / M;
-        v += a * Ts;
-	    s += v * Ts + 0.5 * a * Ts * Ts;
+        v += a * TS;
+	    s += v * TS + 0.5 * a * TS * TS;
 		result.push_back(vector<double>({s, v}));
 	}
 
@@ -31,7 +31,7 @@ vector<vector<double>> NPPredictor(double space, double speed){
 
 vector<vector<double>> MBPredictor(double space){
     vector<vector<double>> result;
-    for(int i = 0; i < Np; i++){
+    for(int i = 0; i < NP_; i++){
 		result.push_back(vector<double>({space, 0.001}));
 	}
 

@@ -8,7 +8,7 @@
 #include "follow_controller.h"
 
 #include <vector>
-
+#include <math.h>
 #include "follow_MPC.h"
 #include "leader_MPC.h"
 #include "constant.h"
@@ -17,7 +17,7 @@
 using namespace std;
 
 vector<pair<double, double>> CutSpeedMaxInfo(vector<pair<double, double>>& speed_max_info, int speed_max_info_index){
-    double max_delta_space =  v_max * Ts * Np;
+    double max_delta_space =  v_max * TS * NP_;
     int delta_index = ceil(max_delta_space / delta_s);
     if(delta_index + speed_max_info_index > speed_max_info.size()-1)
 		delta_index = speed_max_info.size() - 1 - speed_max_info_index;
@@ -27,7 +27,7 @@ vector<pair<double, double>> CutSpeedMaxInfo(vector<pair<double, double>>& speed
             v_max_temp = speed_max_info[speed_max_info_index + i].second;
 		}
 	}
-    max_delta_space = v_max_temp * Ts * Np;
+    max_delta_space = v_max_temp * TS * NP_;
 	delta_index = ceil(max_delta_space / delta_s);
 	if(delta_index + speed_max_info_index > speed_max_info.size()-1)
 		delta_index = speed_max_info.size() - 1 - speed_max_info_index;
