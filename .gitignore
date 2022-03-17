@@ -1,4 +1,4 @@
-*.txt
+logs/
 *.o
 dp
 leader
