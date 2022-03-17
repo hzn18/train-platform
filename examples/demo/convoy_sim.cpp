@@ -31,7 +31,7 @@ Predictor predictor_method = SH;
 
 int main(){
 	// read max speed info
-	vector<pair<double, double>> speed_max_info = ReadSpeedMax(dp_input_filename);
+	vector<pair<double, double>> speed_max_info = ReadSpeedMax(DP_SAFE_OUTPUT_FILENAME);
  
     vector<vector<vector<double>>> result; 
     // 1-dimension: train id
@@ -78,6 +78,7 @@ int main(){
         // 前车控制
         if(!isArrived[0]){           
             // calculate the function
+
 	        leader_mpc_list = LeaderController(space_tmp[0], speed_tmp[0], speed_max_info, speed_max_info_index[0]);
 
 		    double function = leader_mpc_list[0][2];
@@ -150,7 +151,7 @@ int main(){
         if(isArrived[train_num - 1])
             break;
         
-        simulation_time += Ts;
+        simulation_time += T;
     }
     
     for(int train_id = 0; train_id < train_num; train_id++){

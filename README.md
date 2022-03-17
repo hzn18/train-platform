@@ -28,8 +28,8 @@ After you configure these third-party, you should change address information in 
    ./leader
 3. follow mpc
    ``` 
-   make follow
-   ./follow
+   make convoy
+   ./convoy
    ```
 4. data-driven mpc
    ```
